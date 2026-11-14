@@ -13,6 +13,11 @@ Purpose  : Fast read-only health check for one client's Google Ads account:
 
 Usage    : python3 scripts/daily_check.py <client_slug> [--check-days 4] [--baseline-days 14]
 Changelog: 2026-07-18  Initial version
+           2026-11-12  Section 2 adds an impression-share split per Search campaign
+                       (won / lost to budget / lost to rank, weighted by eligible
+                       impressions) so budget- vs rank-limited is visible. The
+                       budget-limited flag uses the same share. Window totals come
+                       from an un-segmented query (exact), not from daily averages.
            2026-07-18  Budget pacing switched from per-campaign daily-budget %
                        to account-level month-to-date spend vs. monthly_budget
                        (client_registry.py), compared against expected pace.
@@ -86,6 +91,7 @@ CPA_ANOMALY_PCT = 50.0
 CONV_ANOMALY_PCT = 50.0
 CONV_VALUE_ANOMALY_PCT = 50.0
 LOST_IS_BUDGET_PCT = 20.0
+API_TIMEOUT_S = 90  # per Google Ads call; a hung gRPC call once blocked every client for weeks
 MIN_BASELINE_CONVERSIONS = 0.3  # per day, over the whole baseline window
 CONV_CHECK_DAYS = 4  # conversion tracking uses its own (wider) window, independent of --check-days
 MONTHLY_PACE_TOLERANCE_PP = 15.0  # percentage points actual pace may deviate from expected pace
@@ -119,13 +125,15 @@ def fetch_rows(client_meta, check_days, baseline_days):
                segments.date,
                metrics.cost_micros, metrics.clicks, metrics.impressions,
                metrics.conversions, metrics.conversions_value,
-               metrics.search_budget_lost_impression_share
+               metrics.search_budget_lost_impression_share,
+               metrics.search_rank_lost_impression_share,
+               metrics.search_impression_share
         FROM campaign
         WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
           AND campaign.status = 'ENABLED'
         ORDER BY campaign.name, segments.date
     """
-    rows = list(ga.search(customer_id=client_meta["customer_id"], query=query))
+    rows = list(ga.search(customer_id=client_meta["customer_id"], query=query, timeout=API_TIMEOUT_S))
 
     # Month-vs-month: this month-to-date (day 1 -> yesterday) vs. the same day-of-month
     # range last month, e.g. running on the 19th compares 01-18 this month to 01-18 last month.
@@ -140,7 +148,7 @@ def fetch_rows(client_meta, check_days, baseline_days):
         FROM customer
         WHERE segments.date BETWEEN '{last_month_start}' AND '{date_to}'
     """
-    cmp_rows = list(ga.search(customer_id=client_meta["customer_id"], query=cmp_query))
+    cmp_rows = list(ga.search(customer_id=client_meta["customer_id"], query=cmp_query, timeout=API_TIMEOUT_S))
     this_month = {"cost": 0.0, "conv": 0.0, "conv_value": 0.0}
     last_month = {"cost": 0.0, "conv": 0.0, "conv_value": 0.0}
     for r in cmp_rows:
@@ -156,6 +164,24 @@ def fetch_rows(client_meta, check_days, baseline_days):
         "this_from": month_start, "this_to": date_to,
         "last_from": last_month_start, "last_to": last_month_to,
         "this": this_month, "last": last_month,
+    }
+
+    # Impression share for the whole check window, aggregated by Google itself (no date
+    # segment) - exact, unlike averaging the rounded daily ratios.
+    check_from = today - timedelta(days=check_days)
+    is_query = f"""
+        SELECT campaign.name, metrics.impressions, metrics.search_impression_share,
+               metrics.search_budget_lost_impression_share, metrics.search_rank_lost_impression_share
+        FROM campaign
+        WHERE segments.date BETWEEN '{check_from}' AND '{date_to}'
+          AND campaign.status = 'ENABLED'
+          AND campaign.advertising_channel_type = 'SEARCH'
+    """
+    month_comparison["impression_share"] = {
+        r.campaign.name: (r.metrics.search_impression_share, r.metrics.search_budget_lost_impression_share,
+                          r.metrics.search_rank_lost_impression_share)
+        for r in ga.search(customer_id=client_meta["customer_id"], query=is_query, timeout=API_TIMEOUT_S)
+        if r.metrics.impressions and r.metrics.search_impression_share
     }
 
     return rows, date_from, date_to, mtd_spend, month_start, month_comparison
@@ -175,6 +201,8 @@ def build_report(client_meta, rows, date_from, date_to, check_days, baseline_day
             "conv": r.metrics.conversions, "conv_value": r.metrics.conversions_value,
             "clicks": r.metrics.clicks, "impressions": r.metrics.impressions,
             "lost_is_budget": r.metrics.search_budget_lost_impression_share,
+            "lost_is_rank": r.metrics.search_rank_lost_impression_share,
+            "is_won": r.metrics.search_impression_share,
         }
         by_campaign[name]["budget"] = micros(r.campaign_budget.amount_micros)
         if d >= check_start:
@@ -312,14 +340,40 @@ def build_report(client_meta, rows, date_from, date_to, check_days, baseline_day
     else:
         lines.append("  [OK] No monthly budget configured for this client — add one in client_registry.py to enable this check.")
 
-    for name, d in sorted(by_campaign.items()):
-        check_days_n = len(d["check"]) or 1
-        avg_lost_is = sum(e["lost_is_budget"] for e in d["check"]) / check_days_n
-        if avg_lost_is * 100 > LOST_IS_BUDGET_PCT:
+    # Impression share split per Search campaign over the check window, weighted by
+    # eligible impressions (impressions / impression share) so busy days count more.
+    # won + lost to budget + lost to rank ~= 100%. Non-Search campaigns report 0 and are skipped.
+    is_split = []
+    is_agg = (month_comparison or {}).get("impression_share")
+    if is_agg is not None:
+        # exact window totals straight from Google (see fetch_rows)
+        for name, (won, lost_b, lost_r) in sorted(is_agg.items()):
+            is_split.append((name, won * 100, (lost_b or 0) * 100, (lost_r or 0) * 100))
+    else:
+        for name, d in sorted(by_campaign.items()):
+            eligible = won = lost_b = lost_r = 0.0
+            for e in d["check"]:
+                if e["is_won"] and e["impressions"]:
+                    elig = e["impressions"] / e["is_won"]
+                    eligible += elig
+                    won += e["impressions"]
+                    lost_b += elig * (e["lost_is_budget"] or 0)
+                    lost_r += elig * (e["lost_is_rank"] or 0)
+            if eligible:
+                is_split.append((name, won / eligible * 100, lost_b / eligible * 100, lost_r / eligible * 100))
+
+    for name, won_pct, lost_b_pct, lost_r_pct in is_split:
+        if lost_b_pct > LOST_IS_BUDGET_PCT:
             lines.append(f"\n  {name}")
-            lines.append(f"    Impression share lost to budget limits: {avg_lost_is*100:.0f}%")
+            lines.append(f"    Impression share lost to budget limits: {lost_b_pct:.0f}%")
+            lines.append(f"    Impression share lost to ad rank: {lost_r_pct:.0f}%")
             lines.append("    [FLAG] This campaign could spend more if its budget allowed.")
             flags += 1
+
+    if is_split:
+        lines.append(f"\n  Impression share split (last {check_days} days, Search campaigns):")
+        for name, won_pct, lost_b_pct, lost_r_pct in is_split:
+            lines.append(f"    IS | {name} | won {won_pct:.0f}% | lost to budget {lost_b_pct:.0f}% | lost to rank {lost_r_pct:.0f}%")
 
     lines.append(f"\n## 3. COST / CPA ANOMALIES (last {check_days} days vs. prior {baseline_days}-day baseline)")
     campaign_blocks = []
