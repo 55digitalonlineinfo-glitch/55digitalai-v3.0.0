@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__PAGE_TITLE__</title>
+<style>
+:root{
+  --bg:#0B0F0D; --panel:#121715; --panel-alt:#141A18; --border:#222B27;
+  --text:#E6EFE9; --text-dim:#87A094; --text-faint:#6E837A;
+  --accent:#18DC49; --accent-soft:#122B1A;
+  --good:#22C38D; --good-bg:#10251C;
+  --warn:#F5A83D; --warn-bg:#2B2112;
+  --crit:#EF4343; --crit-bg:#2A1414;
+  --radius:8px; --chip-radius:20px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4), 0 1px 3px rgba(0,0,0,.3);
+  --shadow-2:0 2px 6px rgba(0,0,0,.5), 0 4px 14px rgba(0,0,0,.3);
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#F4F9F6; --panel:#FFFFFF; --panel-alt:#EAF3EE; --border:#D3E3DA;
+    --text:#10201A; --text-dim:#4F6259; --text-faint:#7C8F85;
+    --accent:#0F8A3E; --accent-soft:#E3F5EA;
+    --good:#0E8F73; --good-bg:#E1F3EC;
+    --warn:#B5750A; --warn-bg:#FBEEDA;
+    --crit:#C62C2C; --crit-bg:#FBE3E3;
+    --shadow-1:0 1px 2px rgba(16,32,26,.12), 0 1px 3px rgba(16,32,26,.08);
+    --shadow-2:0 2px 6px rgba(16,32,26,.14), 0 4px 14px rgba(16,32,26,.08);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B0F0D; --panel:#121715; --panel-alt:#141A18; --border:#222B27;
+  --text:#E6EFE9; --text-dim:#87A094; --text-faint:#6E837A;
+  --accent:#18DC49; --accent-soft:#122B1A;
+  --good:#22C38D; --good-bg:#10251C;
+  --warn:#F5A83D; --warn-bg:#2B2112;
+  --crit:#EF4343; --crit-bg:#2A1414;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4), 0 1px 3px rgba(0,0,0,.3);
+  --shadow-2:0 2px 6px rgba(0,0,0,.5), 0 4px 14px rgba(0,0,0,.3);
+}
+:root[data-theme="light"]{
+  --bg:#F4F9F6; --panel:#FFFFFF; --panel-alt:#EAF3EE; --border:#D3E3DA;
+  --text:#10201A; --text-dim:#4F6259; --text-faint:#7C8F85;
+  --accent:#0F8A3E; --accent-soft:#E3F5EA;
+  --good:#0E8F73; --good-bg:#E1F3EC;
+  --warn:#B5750A; --warn-bg:#FBEEDA;
+  --crit:#C62C2C; --crit-bg:#FBE3E3;
+  --shadow-1:0 1px 2px rgba(16,32,26,.12), 0 1px 3px rgba(16,32,26,.08);
+  --shadow-2:0 2px 6px rgba(16,32,26,.14), 0 4px 14px rgba(16,32,26,.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);}
+body{font-size:13.5px;line-height:1.5;}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+button{font-family:inherit;cursor:pointer;}
+
+.appbar{display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--border);}
+.brand{font-weight:500;font-size:15px;color:var(--text);}
+.brand small{display:block;font-weight:400;color:var(--text-faint);font-size:10.5px;margin-top:1px;}
+.theme-toggle{margin-left:auto;font-size:11px;border:1px solid var(--border);background:var(--panel-alt);border-radius:16px;padding:6px 12px;color:var(--text-dim);flex-shrink:0;transition:background .15s;}
+.theme-toggle:hover{background:var(--accent-soft);color:var(--accent);}
+
+.home{padding:24px 28px 48px;max-width:1120px;margin:0 auto;}
+.home h1{font-size:18px;margin:0 0 3px;font-weight:500;}
+.home p.sub{color:var(--text-faint);margin:0 0 20px;font-size:12.5px;}
+
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.kpi-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-1);}
+.kpi-label{font-size:11px;color:var(--text-dim);margin-bottom:6px;}
+.kpi-value-row{display:flex;align-items:baseline;justify-content:space-between;}
+.kpi-value{font-size:22px;font-weight:500;letter-spacing:-.01em;}
+
+.tabs{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap;}
+.tab{padding:8px 16px;font-size:12.5px;font-weight:500;color:var(--text-dim);cursor:pointer;border-radius:var(--chip-radius);transition:background .12s;border:1px solid transparent;}
+.tab:hover{background:var(--panel-alt);}
+.tab.active{color:var(--accent);background:var(--accent-soft);}
+
+.chart-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:18px;box-shadow:var(--shadow-1);}
+.chart-card h4{margin:0 0 2px;font-size:12.5px;font-weight:600;}
+.chart-card .cc-sub{font-size:11px;color:var(--text-faint);margin-bottom:10px;}
+.report-caption{font-size:12px;color:var(--text-dim);background:var(--panel-alt);border-radius:6px;padding:8px 12px;margin-bottom:12px;}
+.anomaly-note{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);border-radius:6px;padding:9px 12px;font-size:12px;margin-bottom:12px;font-weight:500;}
+.empty{color:var(--text-faint);font-size:12.5px;padding:20px 0;text-align:center;}
+
+.kpi-row.small{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-bottom:0;}
+
+.hbar-row{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;margin-bottom:8px;font-size:12px;}
+.hbar-label{color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hbar-track{background:var(--panel-alt);border-radius:4px;height:14px;overflow:hidden;}
+.hbar-fill{background:var(--accent);height:100%;border-radius:4px;min-width:2px;}
+.hbar-value{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums;text-align:right;min-width:64px;}
+.hbar-wrap{margin-bottom:14px;}
+
+.data-table-wrap{overflow-x:auto;}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{text-align:left;color:var(--text-dim);font-weight:600;padding:6px 10px;border-bottom:1px solid var(--border);white-space:nowrap;}
+.data-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap;}
+.data-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.data-table tr:hover td{background:var(--panel-alt);}
+.data-table tr.row-anomaly td{background:var(--warn-bg);}
+.table-toggle{font-size:11px;color:var(--accent);cursor:pointer;margin-top:8px;display:inline-block;font-weight:500;}
+
+.bar-chart{width:100%;overflow:visible;}
+.bar-chart .baseline{stroke:var(--border);stroke-width:1;}
+.bar-chart .x-label{font-size:9.5px;fill:var(--text-faint);font-family:var(--sans);}
+.spark-line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.spark-area{fill:var(--accent);opacity:.10;}
+.spark-dot{fill:var(--accent);stroke:var(--panel);stroke-width:2;cursor:pointer;}
+.chart-tooltip{position:fixed;pointer-events:none;background:var(--text);color:var(--bg);font-size:11px;padding:6px 10px;border-radius:6px;z-index:50;box-shadow:var(--shadow-2);opacity:0;transition:opacity .08s;white-space:nowrap;}
+.chart-tooltip .val{font-weight:700;} .chart-tooltip .lbl{color:var(--text-faint);margin-top:1px;}
+
+@media (max-width:760px){
+  .home{padding:16px 14px 36px;}
+  .appbar{padding:8px 12px;}
+  .brand small{display:none;}
+  .hbar-row{grid-template-columns:100px 1fr auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="appbar">
+  <div class="brand">__AGENCY_NAME__ <small>GA4 Dashboard — __CLIENT_NAME__</small></div>
+  <button class="theme-toggle" id="theme-toggle">Toggle theme</button>
+</div>
+
+<div class="home">
+  <h1 id="page-title"></h1>
+  <p class="sub" id="page-sub"></p>
+  <div class="kpi-row" id="overview-kpis"></div>
+  <div class="tabs" id="category-tabs"></div>
+  <div id="tab-body"></div>
+</div>
+
+<div class="chart-tooltip" id="tooltip"><div class="val"></div><div class="lbl"></div></div>
+
+<script id="dashboard-data" type="application/json">/*__DASHBOARD_DATA__*/{}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('dashboard-data').textContent);
+const tip = document.getElementById('tooltip');
+let currentCategory = (DATA.categories && DATA.categories[0]) || null;
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showTip(evt, valueText, labelText){
+  tip.querySelector('.val').textContent = valueText;
+  tip.querySelector('.lbl').textContent = labelText;
+  tip.style.opacity = 1;
+  const x = evt.clientX, y = evt.clientY;
+  tip.style.left = Math.min(x + 12, window.innerWidth - 160) + 'px';
+  tip.style.top = (y - 38) + 'px';
+}
+function hideTip(){ tip.style.opacity = 0; }
+
+/* ---------- KPI tiles ---------- */
+function kpiRowHtml(kpis, small){
+  const cls = small ? 'kpi-row small' : 'kpi-row';
+  return `<div class="${cls}">` + kpis.map(k =>
+    `<div class="kpi-card"><div class="kpi-label">${esc(k.label)}</div>` +
+    `<div class="kpi-value-row"><span class="kpi-value">${esc(k.value)}</span></div></div>`
+  ).join('') + `</div>`;
+}
+
+/* ---------- trend chart (line + hover dots) ---------- */
+function renderTrendChart(container, series){
+  if(!series.length){ container.innerHTML = '<div class="empty">No data returned for this period.</div>'; return; }
+  const w = 640, h = 160, padL = 8, padR = 8, padT = 10, padB = 22;
+  const max = Math.max(...series.map(p => p.y), 1);
+  const stepX = (w - padL - padR) / ((series.length - 1) || 1);
+  const pts = series.map((p, i) => [padL + i * stepX, h - padB - (p.y / max) * (h - padT - padB)]);
+  const line = pts.map(p => p.join(',')).join(' ');
+  const area = `${padL},${h - padB} ${line} ${w - padR},${h - padB}`;
+  const labelEvery = series.length <= 10 ? 1 : Math.ceil(series.length / 8);
+  let svg = `<svg class="bar-chart" viewBox="0 0 ${w} ${h}" width="100%" height="${h}">` +
+    `<line class="baseline" x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}"></line>` +
+    `<polygon class="spark-area" points="${area}"></polygon>` +
+    `<polyline class="spark-line" points="${line}"></polyline>`;
+  pts.forEach((p, i) => {
+    svg += `<circle class="spark-dot" data-v="${esc(series[i].y_formatted)}" data-l="${esc(series[i].x)}" cx="${p[0]}" cy="${p[1]}" r="3"></circle>`;
+    if (i % labelEvery === 0 || i === pts.length - 1) {
+      svg += `<text class="x-label" x="${p[0]}" y="${h - 6}" text-anchor="middle">${esc(series[i].x)}</text>`;
+    }
+  });
+  svg += '</svg>';
+  container.innerHTML = svg;
+  container.querySelectorAll('.spark-dot').forEach(d => {
+    d.addEventListener('pointermove', e => showTip(e, d.dataset.v, d.dataset.l));
+    d.addEventListener('pointerleave', hideTip);
+  });
+}
+
+/* ---------- categorical top-10 bars (plain CSS, no SVG) ---------- */
+function hbarRowsHtml(rows){
+  if(!rows.length) return '<div class="empty">No data returned for this period.</div>';
+  const top = rows.slice(0, 10);
+  return '<div class="hbar-wrap">' + top.map(r => {
+    const pct = Math.max(Math.min((r.share || 0) * 100, 100), 1);
+    const label = r.dim.join(' / ');
+    return `<div class="hbar-row"><div class="hbar-label" title="${esc(label)}">${esc(label)}</div>` +
+      `<div class="hbar-track"><div class="hbar-fill" style="width:${pct}%"></div></div>` +
+      `<div class="hbar-value">${esc(r.primary_formatted)}</div></div>`;
+  }).join('') + '</div>';
+}
+
+/* ---------- full data table (shared by bar_table / table_only / trend) ---------- */
+function dataTableHtml(headers, rows){
+  if(!rows.length) return '<div class="empty">No data returned for this period.</div>';
+  const allH = [...headers.dimensions, ...headers.metrics, ...headers.derived];
+  let html = `<div class="data-table-wrap"><table class="data-table"><thead><tr>${allH.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>`;
+  rows.forEach(r => {
+    const cells = [
+      ...r.dim.map(d => `<td>${esc(d)}</td>`),
+      ...r.metrics.map(m => `<td class="num">${esc(m)}</td>`),
+      ...(r.derived || []).map(d => `<td class="num">${esc(d)}</td>`),
+    ];
+    html += `<tr class="${r.anomaly ? 'row-anomaly' : ''}">${cells.join('')}</tr>`;
+  });
+  html += '</tbody></table></div>';
+  return html;
+}
+
+/* ---------- report card: shell HTML (mount points get filled in a second pass) ---------- */
+function reportCardShell(report, idx){
+  let inner = `<h4>${esc(report.display_name)}</h4><div class="cc-sub">${esc(report.description)}</div>`;
+  if (report.caption) inner += `<div class="report-caption">${esc(report.caption)}</div>`;
+  if (report.anomaly) inner += `<div class="anomaly-note">⚠ ${esc(report.anomaly.message)}</div>`;
+
+  if (report.shape === 'error') {
+    inner += `<div class="empty">Couldn't load this report (${esc(report.error)}).</div>`;
+  } else if (report.shape === 'kpi') {
+    inner += kpiRowHtml(report.kpis, true);
+  } else if (report.shape === 'trend') {
+    inner += `<div class="trend-mount" id="mount-${idx}"></div>`;
+    inner += dataTableHtml(report.headers, report.rows);
+  } else if (report.shape === 'bar_table') {
+    inner += hbarRowsHtml(report.rows);
+    inner += dataTableHtml(report.headers, report.rows);
+  } else if (report.shape === 'table_only') {
+    inner += dataTableHtml(report.headers, report.rows);
+  }
+  return `<div class="chart-card">${inner}</div>`;
+}
+
+/* ---------- category tabs + body ---------- */
+function renderCategoryTabs(){
+  const el = document.getElementById('category-tabs');
+  el.innerHTML = (DATA.categories || []).map(cat =>
+    `<div class="tab ${cat === currentCategory ? 'active' : ''}" data-cat="${esc(cat)}">${esc(cat)}</div>`
+  ).join('');
+  el.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => { currentCategory = t.dataset.cat; render(); });
+  });
+}
+
+function renderTabBody(){
+  const body = document.getElementById('tab-body');
+  const reports = (DATA.reports || []).filter(r => r.category === currentCategory);
+  body.innerHTML = reports.map((r, i) => reportCardShell(r, i)).join('');
+  reports.forEach((r, i) => {
+    if (r.shape === 'trend') {
+      const mount = document.getElementById(`mount-${i}`);
+      if (mount) renderTrendChart(mount, r.series);
+    }
+  });
+}
+
+function renderOverview(){
+  document.getElementById('page-title').textContent = `${DATA.client.name} — GA4 Dashboard`;
+  let sub = `${DATA.period.date_from} → ${DATA.period.date_to} (${DATA.period.days} days) · generated ${DATA.generated_at.replace('T',' ')}`;
+  document.getElementById('page-sub').innerHTML = esc(sub) +
+    (DATA.conversion_note ? `<br><span style="color:var(--accent)">${esc(DATA.conversion_note)}</span>` : '');
+  document.getElementById('overview-kpis').innerHTML = kpiRowHtml(DATA.overview.kpis, false);
+}
+
+function render(){
+  renderOverview();
+  renderCategoryTabs();
+  renderTabBody();
+}
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const root = document.documentElement;
+  const cur = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+});
+
+render();
+</script>
+</body>
+</html>

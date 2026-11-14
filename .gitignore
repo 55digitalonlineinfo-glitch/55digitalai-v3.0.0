@@ -1,0 +1,35 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+dashboard/
+change_log.db
+term_cache.db
+brand_config.json
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+scripts/_scheduled/
+google-ads.yaml
+clients.json
+.env
+*.json.bak
+credentials.json
+merchant-center-credentials.json
+scripts/.hostinger-credentials
+scripts/.license_admin_token
+clients/*
+!clients/_template/
+
+# website audit output (guidelines / SEO runs without a client folder)
+guidelines/
+seo-audits/
+
+# seller-only tooling, never published
+license-server/
+scripts/issue_license_key.py
+node_modules/
+
+# private list of client terms the release leak check blocks
+.release-blocklist

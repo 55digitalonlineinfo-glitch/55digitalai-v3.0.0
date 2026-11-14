@@ -1,0 +1,21 @@
+{
+  "agency_name": "Your Agency Name",
+  "logo_path": null,
+  "colors": {
+    "primary": "#07153F",
+    "accent": "#3E5CE7",
+    "accent_alt": "#324ECF",
+    "secondary": "#444751",
+    "text": "#6F7176",
+    "bg_light": "#F4F7FC",
+    "white": "#FFFFFF",
+    "pass": "#1E8E3E",
+    "pass_bg": "#E6F4EA",
+    "fail": "#D93025",
+    "fail_bg": "#FCE8E6",
+    "warn": "#F9AB00",
+    "warn_bg": "#FEF7E0",
+    "na": "#9AA0A6",
+    "na_bg": "#F1F3F4"
+  }
+}

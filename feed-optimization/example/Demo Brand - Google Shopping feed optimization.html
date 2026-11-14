@@ -1,0 +1,116 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Demo Brand (example) - feed</title><link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#D6893E;--pl:#F0B072;--ink:#f2f4f5;--muted:#a7abb8;--line:rgba(255,255,255,.14)}
+body{font-family:"Inter Tight",system-ui,sans-serif;color:var(--ink);background:#15120f;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+/* PDF-safe: glow comes ONLY from radial-gradient layers - no filter:blur, no box-shadow, no backdrop-filter */
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;padding:16mm 15mm 18mm;page-break-after:always;display:flex;flex-direction:column;gap:5mm;
+ background:radial-gradient(120mm 120mm at 100% 0%,rgba(214,137,62,.38),rgba(214,137,62,0) 70%),radial-gradient(110mm 110mm at 0% 100%,rgba(138,126,112,.35),rgba(138,126,112,0) 70%),radial-gradient(70mm 70mm at 100% 70%,rgba(214,137,62,.14),rgba(214,137,62,0) 70%),linear-gradient(160deg,#1d1915 0%,#15120f 45%,#15120f 100%)}
+/* PDF-safe: one solid rgba fill (a gradient fill left a seam), only an inset 1px highlight (an outer shadow printed as a black block) */
+.glass{background:rgba(255,255,255,.065);border:1px solid var(--line);border-radius:5mm;box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.head{display:flex;justify-content:space-between;align-items:center;font-size:8.5pt;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.logo{height:7mm;max-width:60mm;object-fit:contain;object-position:left}
+.logo.big{height:12mm;align-self:flex-start;margin-bottom:8mm}
+.foot{position:absolute;left:15mm;right:15mm;bottom:8mm;display:flex;justify-content:space-between;font-size:7.5pt;color:var(--muted)}
+h1{font-size:30pt;line-height:1.08;font-weight:700;letter-spacing:-.02em}
+h2{font-size:20pt;font-weight:700;letter-spacing:-.015em;margin-top:2mm}
+h3{font-size:12pt;font-weight:650}
+.sub{color:var(--muted);font-size:9.5pt;line-height:1.45;margin-top:-2mm}
+.accent{color:var(--pl)} .warn{color:#ffb020}
+.eyebrow{font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:var(--pl);font-weight:600}
+mark{background:rgba(214,137,62,.22);color:#fff;border-bottom:1.5px solid var(--p);padding:0 .5mm;border-radius:1mm}
+.cover-in{display:flex;flex-direction:column;gap:7mm;margin-top:30mm}
+.lead{font-size:12pt;line-height:1.5;color:#d6d8df;max-width:160mm}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:6mm}
+.kpi{padding:6mm}.kpi b{display:block;font-size:20pt;font-weight:700}.kpi span{font-size:9pt;color:var(--muted);line-height:1.35}
+.period{font-size:8pt;color:var(--muted);margin-top:4mm}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+.step{padding:5mm}.step p{font-size:9pt;line-height:1.5;color:#d0d3db}.step b{color:#fff}.step h3{margin-bottom:2mm}
+.step i{display:inline-flex;width:8mm;height:8mm;border-radius:50%;background:var(--p);color:#fff;font-style:normal;font-weight:700;align-items:center;justify-content:center;font-size:10pt;margin-bottom:3mm}
+.formula{padding:6mm;display:flex;flex-direction:column;gap:4mm}
+.f-row{display:flex;align-items:center;gap:2.5mm;flex-wrap:wrap}
+.chip{padding:2.5mm 4mm;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-size:9pt;font-weight:600}
+.chip.main{background:rgba(214,137,62,.25);border-color:rgba(214,137,62,.6)}
+.plus{color:var(--muted);font-weight:700}
+.ex{font-size:10.5pt;line-height:1.6;padding:4mm;border-radius:3mm;background:rgba(0,0,0,.25)}
+.rules{padding-left:5mm;font-size:9pt;line-height:1.55;color:#d0d3db;display:flex;flex-direction:column;gap:1.5mm}
+.tbl{padding:3mm 5mm}
+table{width:100%;border-collapse:collapse;font-size:9pt}
+th{font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left;padding:2mm 1.5mm;font-weight:600;border-bottom:1px solid var(--line)}
+td{padding:1.9mm 1.5mm;border-bottom:1px solid rgba(255,255,255,.06)}
+tr:last-child td{border-bottom:none}
+.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+td.bar{width:42%} td.bar div,td.vbar div{height:3mm;border-radius:2mm;background:linear-gradient(90deg,var(--p),var(--pl))}
+td.vbar{width:34%;white-space:nowrap} td.vbar.wide{width:48%}
+td.vbar div{display:inline-block;vertical-align:middle;height:3.6mm}
+td.vbar em{display:inline-block;vertical-align:middle;margin-left:2mm;font-style:normal;font-size:8pt;font-weight:600;color:#fff}
+table.ads td{font-size:8.5pt}
+tr.up .roas{color:var(--pl);font-weight:700}
+tr.down td.vbar div{background:linear-gradient(90deg,#b45309,#ffb020)} tr.down .roas,tr.down .dec{color:#ffb020;font-weight:700}
+td.dec{font-size:8pt;color:#d0d3db}
+.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+.ins{padding:4.5mm}.ins b{display:block;font-size:17pt;font-weight:700;margin-bottom:1.5mm}.ins span{font-size:8.5pt;line-height:1.45;color:#d0d3db}
+.note{font-size:8.5pt;line-height:1.5;color:var(--muted);border-left:2px solid var(--p);padding-left:3mm}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.box{padding:5mm;display:flex;flex-direction:column;gap:3mm;font-size:9pt;line-height:1.5}
+.sbar{display:flex;height:7mm;border-radius:2mm;overflow:hidden;font-size:7.5pt;font-weight:600}
+.sb{background:var(--muted);color:#17171b;display:flex;align-items:center;padding-left:2.5mm}.sg{background:var(--p)}
+.small{font-size:8.5pt;color:#d0d3db}
+.pm{list-style:none;display:flex;flex-direction:column;gap:2mm;font-size:8.8pt}
+.pm li{padding-left:6mm;position:relative;line-height:1.4}.pm li::before{position:absolute;left:0;font-weight:700}
+.pm .p::before{content:"+";color:#4ade80}.pm .m::before{content:"-";color:#ffb020}
+.prod-page{gap:3.5mm;padding-top:13mm}
+.prod{padding:4mm 5mm;display:flex;flex-direction:column;gap:2.5mm}
+.p-head{display:flex;align-items:center;gap:4mm}
+/* light tile so dark product photos don't vanish on the dark page; no drop-shadow (filters break in PDF) */
+.p-head img{width:30mm;height:21mm;object-fit:contain;padding:1.5mm;border-radius:3mm;background:radial-gradient(circle at 50% 40%,#ffffff,#d9dce3)}
+.ba{display:grid;grid-template-columns:1fr 1.45fr;gap:2mm 4mm}
+.lbl{font-size:7pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.lbl.b{color:var(--muted)}.lbl.a{color:var(--pl)}
+.bt{font-size:9pt;line-height:1.45;padding:2.5mm 3mm;border-radius:2.5mm}
+.bt small{display:block;font-size:7pt;color:var(--muted);margin-top:1mm}
+.bt.old{background:rgba(255,255,255,.04);color:#b9bcc6}
+.bt.new{background:rgba(214,137,62,.10);border:1px solid rgba(214,137,62,.35);font-weight:600}
+.bd{font-size:7.4pt;line-height:1.45;padding:2.5mm 3mm;border-radius:2.5mm}
+.bd.old{background:rgba(255,255,255,.04);color:#9ea2ad;font-style:italic}.bd.new{background:rgba(255,255,255,.06);color:#e3e5ea}
+</style></head><body><section class="page cover"><div class="cover-in"><img class="logo big" src="img/logo.png" alt="">
+<div class="eyebrow">Google Merchant Center · Google Shopping · Performance Max</div>
+<h1>Title and description optimization<br><span class="accent">4 best-selling</span> coffee machines</h1>
+<p class="lead">New titles and descriptions based on data: how many people search each phrase (Google Keyword Planner) and which phrases actually drove sales in your Google Ads account.</p>
+<div class="kpis">
+<div class="glass kpi"><b>4</b><span>best-selling products</span></div>
+<div class="glass kpi"><b>48 210</b><span>search terms analysed from Google Ads</span></div>
+<div class="glass kpi"><b>1 124 600 €</b><span>conversion value in the analysed period</span></div>
+<div class="glass kpi"><b>12</b><span>phrases checked in Keyword Planner</span></div></div>
+<p class="period">Google Ads data: 01.10.2025 - 30.09.2026 · Keyword Planner: monthly average</p></div>
+<div class="foot"><span>October 2026</span><span>1</span></div></section><section class="page "><div class="head"><img class="logo" src="img/logo.png" alt=""><span>Google Shopping feed optimization</span></div><h2>How the new titles and descriptions were built</h2><p class="sub">Three data sources, and every change is backed by numbers or by the product page.</p>
+<div class="steps"><div class="glass step"><i>1</i><h3>Keyword Planner</h3><p>We checked how often customers search for phrases describing the products. This shows <b>what customers call the product</b>.</p></div>
+<div class="glass step"><i>2</i><h3>Google Ads search terms report</h3><p>48 210 real queries from your campaigns with cost, conversions and conversion value. This shows <b>which words sell</b>, not just which are popular.</p></div>
+<div class="glass step"><i>3</i><h3>Checked against the product page</h3><p>Every sentence of the new description was checked against the product page. Descriptions contain <b>only features confirmed on the page</b>.</p></div></div>
+<div class="glass formula"><div class="eyebrow">New title structure</div><div class="f-row"><span class="chip main">Best-selling phrase</span><span class="plus">+</span><span class="chip">Brand and model</span><span class="plus">+</span><span class="chip">Key feature</span></div>
+<p class="ex"><mark>Bean to cup coffee machine with grinder</mark> Demo Brand A300 Milk | with <mark>milk frother</mark>, 15 bar</p><ul class="rules"><li>The most important phrases go in the first ~50 characters, because that is usually all Google shows in a Shopping ad.</li><li>The brand stays in the visible part of the title, but after the phrase that sells.</li><li>Every title stays within the 150-character limit.</li><li>Descriptions: main phrase first, supporting phrases once each, no promotional claims.</li></ul></div><div class="foot"><span>October 2026</span><span>2</span></div></section><section class="page "><div class="head"><img class="logo" src="img/logo.png" alt=""><span>Google Shopping feed optimization</span></div><h2>Step 1: how customers search</h2><p class="sub">Average monthly searches, Google Keyword Planner.</p>
+<div class="glass tbl"><table><thead><tr><th>Phrase</th><th></th><th class="n">Searches / mo.</th></tr></thead><tbody><tr><td>coffee machine</td><td class="bar"><div style="width:100.0%"></div></td><td class="n">74 000</td></tr><tr><td>espresso machine</td><td class="bar"><div style="width:30.0%"></div></td><td class="n">22 200</td></tr><tr><td>bean to cup coffee machine</td><td class="bar"><div style="width:24.5%"></div></td><td class="n">18 100</td></tr><tr><td>coffee machine with grinder</td><td class="bar"><div style="width:13.4%"></div></td><td class="n">9 900</td></tr><tr><td>coffee machine for home</td><td class="bar"><div style="width:8.9%"></div></td><td class="n">6 600</td></tr><tr><td>espresso machine with grinder</td><td class="bar"><div style="width:7.3%"></div></td><td class="n">5 400</td></tr><tr><td>coffee machine with milk frother</td><td class="bar"><div style="width:3.9%"></div></td><td class="n">2 900</td></tr><tr><td>demo brand</td><td class="bar"><div style="width:3.2%"></div></td><td class="n">2 400</td></tr><tr><td>manual espresso machine</td><td class="bar"><div style="width:3.2%"></div></td><td class="n">2 400</td></tr><tr><td>coffee bean machine</td><td class="bar"><div style="width:2.2%"></div></td><td class="n">1 600</td></tr><tr><td>compact coffee machine</td><td class="bar"><div style="width:1.5%"></div></td><td class="n">720</td></tr><tr><td>15 bar espresso machine</td><td class="bar"><div style="width:1.5%"></div></td><td class="n">590</td></tr></tbody></table></div>
+<div class="insights"><div class="glass ins"><b class="accent">18 100</b><span>“Bean to cup coffee machine” is the biggest phrase that describes exactly this type of product.</span></div><div class="glass ins"><b class="accent">9 900</b><span>“With grinder” is a feature customers actively search for.</span></div><div class="glass ins"><b class="accent">2 400</b><span>The brand itself is searched regularly, so it stays in the visible part of the title.</span></div></div><p class="note">Volume alone is not enough: a popular phrase doesn&#x27;t necessarily sell. That&#x27;s why step 2 checks which phrases actually brought in sales.</p><div class="foot"><span>October 2026</span><span>3</span></div></section><section class="page "><div class="head"><img class="logo" src="img/logo.png" alt=""><span>Google Shopping feed optimization</span></div><h2>Step 2: which words actually sell</h2><p class="sub">Google Ads search terms report, 01.10.2025 - 30.09.2026. Phrases grouped into themes. Branded phrases excluded, since those people already know the brand.</p>
+<div class="glass tbl"><table class="ads"><thead><tr><th>Phrase theme</th><th class="n">Cost</th><th class="n">Conv.</th><th>Conversion value</th><th class="n">ROAS</th><th>Decision</th></tr></thead><tbody><tr class="up"><td>bean to cup / automatic</td><td class="n">18 420 €</td><td class="n">31.2</td><td class="vbar"><div style="width:66.0%"></div><em>82 150 €</em></td><td class="n roas">4.5</td><td class="dec">Start of the title</td></tr><tr class="up"><td>with grinder</td><td class="n">15 210 €</td><td class="n">24.6</td><td class="vbar"><div style="width:49.3%"></div><em>61 340 €</em></td><td class="n roas">4.0</td><td class="dec">Right after “bean to cup”</td></tr><tr class="up"><td>portafilter / manual</td><td class="n">11 080 €</td><td class="n">12.3</td><td class="vbar"><div style="width:27.2%"></div><em>33 870 €</em></td><td class="n roas">3.1</td><td class="dec">Start of title (manual models)</td></tr><tr class="up"><td>milk frother / latte</td><td class="n">9 640 €</td><td class="n">9.8</td><td class="vbar"><div style="width:19.4%"></div><em>24 120 €</em></td><td class="n roas">2.5</td><td class="dec">In the title as a feature</td></tr><tr class="mid"><td>for home</td><td class="n">6 830 €</td><td class="n">6.2</td><td class="vbar"><div style="width:10.0%"></div><em>12 480 €</em></td><td class="n roas">1.8</td><td class="dec">Added to descriptions</td></tr><tr class="mid"><td>compact / small</td><td class="n">4 120 €</td><td class="n">3.1</td><td class="vbar"><div style="width:4.2%"></div><em>5 210 €</em></td><td class="n roas">1.3</td><td class="dec">Not highlighted</td></tr></tbody></table></div>
+<div class="insights"><div class="glass ins"><b class="accent">82 150 €</b><span>“Bean to cup” brought in the most sales of all themes, more than plain “espresso machine”, despite lower volume.</span></div><div class="glass ins"><b class="accent">4.5</b><span>“With grinder” returned 4.5 € in sales for every euro spent.</span></div><div class="glass ins"><b class="accent">12 480 €</b><span>“For home” is how customers describe the machine in their own words, so it went into the descriptions.</span></div></div><div class="foot"><span>October 2026</span><span>4</span></div></section><section class="page "><div class="head"><img class="logo" src="img/logo.png" alt=""><span>Google Shopping feed optimization</span></div><h2>Phrases with the highest conversion value</h2><p class="sub">Individual non-branded queries that drove the most sales. These words went into the new titles and descriptions.</p>
+<div class="glass tbl"><table class="ads"><thead><tr><th>Search term</th><th class="n">Conversions</th><th>Conversion value</th></tr></thead><tbody><tr><td>bean to cup coffee machine with grinder</td><td class="n">12.4</td><td class="vbar wide"><div style="width:72.0%"></div><em>38 210 €</em></td></tr><tr><td>automatic coffee machine</td><td class="n">8.1</td><td class="vbar wide"><div style="width:47.1%"></div><em>24 970 €</em></td></tr><tr><td>manual espresso machine for home</td><td class="n">5.2</td><td class="vbar wide"><div style="width:32.7%"></div><em>17 340 €</em></td></tr><tr><td>coffee machine with grinder</td><td class="n">6.0</td><td class="vbar wide"><div style="width:29.9%"></div><em>15 880 €</em></td></tr><tr><td>coffee bean machine</td><td class="n">2.1</td><td class="vbar wide"><div style="width:13.7%"></div><em>7 260 €</em></td></tr></tbody></table></div>
+<div class="two"><div class="glass box"><div class="eyebrow">Where Google Ads sales come from</div><div class="sbar"><div class="sb" style="width:77.7%">Brand · 78%</div><div class="sg" style="width:22.3%"></div></div><p><b>874 300 €</b> from branded phrases<br><b>250 300 €</b> from generic phrases</p><p class="small">The new titles target generic phrases, i.e. customers who don't know the brand yet. That's where the most room for growth is.</p></div><div class="glass box"><div class="eyebrow">What we added and removed</div><ul class="pm"><li class="p">“bean to cup with grinder” and “portafilter” at the start of the title</li><li class="p">each model&#x27;s key feature at the end of the title</li><li class="p">“for home” in the descriptions</li><li class="m">promotional claims (“brand new”, “you&#x27;ll love”) and anything not confirmed on the product page</li></ul></div></div><div class="foot"><span>October 2026</span><span>5</span></div></section><section class="page prod-page"><div class="head"><img class="logo" src="img/logo.png" alt=""><span>Google Shopping feed optimization</span></div><h2>Before and after: titles and descriptions</h2><p class="sub">Highlighted: phrases chosen based on steps 1 and 2. “Before” for the description is the start of the current product-page description.</p><div class="glass prod"><div class="p-head"><img src="img/101.png" alt=""><div>
+<div class="eyebrow">ID 101 · sales 184 250 €</div><h3>Demo Brand A300 Milk</h3></div></div>
+<div class="ba"><div class="lbl b">Before</div><div class="lbl a">After</div>
+<div class="bt old">Demo Brand A300 Milk coffee machine<small>35 characters</small></div>
+<div class="bt new"><mark>Bean to cup coffee machine with grinder</mark> Demo Brand A300 Milk | with <mark>milk frother</mark>, 15 bar<small>88 characters</small></div>
+<div class="bd old">Demo Brand A300 Milk - brand new in our range! Meet the machine you&#x27;ll love from the very first cup. Automatic milk frother, 15 bar pressure...</div><div class="bd new"><mark>Bean to cup coffee machine with grinder</mark> Demo Brand A300 Milk is a 15 bar <mark>espresso machine for home</mark>. Key feature: automatic <mark>milk frother</mark>. This <mark>coffee bean machine</mark> grinds fresh beans right before brewing. Black finish.</div></div></div><div class="glass prod"><div class="p-head"><img src="img/102.png" alt=""><div>
+<div class="eyebrow">ID 102 · sales 141 780 €</div><h3>Demo Brand A200</h3></div></div>
+<div class="ba"><div class="lbl b">Before</div><div class="lbl a">After</div>
+<div class="bt old">Demo Brand A200 coffee machine<small>30 characters</small></div>
+<div class="bt new"><mark>Bean to cup coffee machine with grinder</mark> Demo Brand A200 | with ceramic grinder, 15 bar<small>86 characters</small></div>
+<div class="bd old">Demo Brand A200 - brand new in our range! Meet the machine you&#x27;ll love from the very first cup. Ceramic grinder with 12 settings, 15 bar pressure...</div><div class="bd new"><mark>Bean to cup coffee machine with grinder</mark> Demo Brand A200 is a 15 bar <mark>espresso machine for home</mark>. Key feature: ceramic grinder with 12 settings. This <mark>coffee bean machine</mark> grinds fresh beans right before brewing. Black finish.</div></div></div><div class="foot"><span>October 2026</span><span>6</span></div></section><section class="page prod-page"><div class="head"><img class="logo" src="img/logo.png" alt=""><span>Google Shopping feed optimization</span></div><div class="glass prod"><div class="p-head"><img src="img/103.png" alt=""><div>
+<div class="eyebrow">ID 103 · sales 126 400 €</div><h3>Demo Brand M1</h3></div></div>
+<div class="ba"><div class="lbl b">Before</div><div class="lbl a">After</div>
+<div class="bt old">Demo Brand M1 coffee machine<small>28 characters</small></div>
+<div class="bt new"><mark>Espresso machine with portafilter</mark> Demo Brand M1 | with pressure gauge, 15 bar<small>77 characters</small></div>
+<div class="bd old">Demo Brand M1 - brand new in our range! Meet the machine you&#x27;ll love from the very first cup. 58 mm portafilter and pressure gauge, 15 bar pressure...</div><div class="bd new"><mark>Espresso machine with portafilter</mark> Demo Brand M1 is a 15 bar <mark>espresso machine for home</mark>. Key feature: 58 mm <mark>portafilter</mark> and pressure gauge. A <mark>manual espresso machine</mark> for pulling espresso yourself. Black finish.</div></div></div><div class="glass prod"><div class="p-head"><img src="img/104.png" alt=""><div>
+<div class="eyebrow">ID 104 · sales 98 320 €</div><h3>Demo Brand C1</h3></div></div>
+<div class="ba"><div class="lbl b">Before</div><div class="lbl a">After</div>
+<div class="bt old">Demo Brand C1 coffee machine<small>28 characters</small></div>
+<div class="bt new"><mark>Bean to cup coffee machine with grinder</mark> Demo Brand C1 | compact, 18 cm wide, 15 bar<small>83 characters</small></div>
+<div class="bd old">Demo Brand C1 - brand new in our range! Meet the machine you&#x27;ll love from the very first cup. Only 18 cm wide, 15 bar pressure...</div><div class="bd new"><mark>Bean to cup coffee machine with grinder</mark> Demo Brand C1 is a 15 bar <mark>espresso machine for home</mark>. Key feature: only 18 cm wide. This <mark>coffee bean machine</mark> grinds fresh beans right before brewing. Black finish.</div></div></div><div class="foot"><span>October 2026</span><span>7</span></div></section></body></html>

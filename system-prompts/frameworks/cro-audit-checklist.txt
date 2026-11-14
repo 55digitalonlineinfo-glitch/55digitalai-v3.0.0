@@ -1,0 +1,348 @@
+# CRO audit checklist - single source of truth for /cro-audit.
+# Format:  SECTION_CODE|Sub-group|Priority(H/M/L)|Check text
+# IDs are assigned by scripts/cro_audit.py in file order (GEN-01, GEN-02 ...), so the source's
+# duplicate numbers (two "10"s, two "23"s, two "27"s) cannot collide or be lost.
+# Do NOT delete or merge lines. To drop a check for a client, mark it N/A in the results, never here.
+# Lines starting with # are ignored. Section titles: see SECTIONS in scripts/cro_audit.py.
+GEN|General|H|Check form visibility and functionality (including hidden gclid field)
+GEN|General|H|Add an exit-intent popup
+GEN|General|H|Check that the consent mode banner is large enough and cannot be easily ignored
+GEN|General|H|Check that the sales funnel is working properly (Add to Cart, Begin Checkout, Purchase)
+GEN|General|H|Verify that the website automatically redirects from the payment provider to the thank-you page after successful payment
+GEN|General|H|Verify that the website does NOT redirect to the thank-you page when the payment fails
+GEN|General|H|Offer upsell opportunities between checkout and the thank you page, encouraging users to add more items to their cart
+GEN|General|H|Ensure the site's logo is consistently placed on every page, allowing users to easily return to the homepage
+GEN|General|H|Use subtle animations (e.g., micro-interactions like pulses) to emphasize the main CTA on each page
+GEN|General|H|Make sure every page has a clear CTA (Call-to-Action), even pages like 404 errors or About Us
+GEN|General|M|Clickable elements (like buttons) should be visually obvious (e.g., hover states, rounded corners, and clear call-to-actions)
+GEN|General|M|Ensure the cookie notification bar can be easily closed or approved in under 2 seconds
+GEN|General|M|Offer a wishlist option for users to save products for future purchase, easing the decision-making process
+GEN|General|M|Button labels and link labels should start with action words, such as "Shop Now" or "Learn More"
+GEN|General|M|Items that aren't clickable should not have characteristics that suggest they are, to avoid confusion
+GEN|General|H|Ensure the main pages (home page, landing page, product page) load quickly, ideally in 5 seconds or less
+GEN|General|L|Avoid annoying pop-ups, especially early in the browsing process
+GEN|General|L|Promote site-wide offers or important information (e.g., free shipping) in a visible top bar, with urgency or scarcity when applicable
+GEN|General|M|The top bar should contain a clear CTA that directs users to the appropriate page for offers (e.g., "Shop Now")
+GEN|Navigation|H|Ensure the navigation system is shallow and broad, avoiding too many menu layers
+GEN|Navigation|H|Provide clear feedback in the navigation system, indicating the active page or category
+GEN|Navigation|H|Ensure category labels are clear and descriptive, allowing users to easily find what they need
+GEN|Navigation|H|Organize navigation items logically, with less important links (e.g., privacy policy, terms) appearing in the footer or secondary menu
+GEN|Navigation|H|Keep navigation consistent across all pages, with sticky navigation that remains visible as users scroll
+GEN|Navigation|H|Make the search bar easily accessible, with auto-suggestions to improve user experience
+HOME|General|H|Highlight site-wide offers (e.g., free shipping) in a top bar to create urgency and draw attention
+HOME|General|H|Ensure the homepage is professionally designed, not overloaded, and creates a positive first impression
+HOME|General|H|Clearly communicate the key products the store is selling as soon as visitors land on the homepage
+HOME|General|H|Use a clean and straightforward visual hierarchy, guiding users' attention to key sections
+HOME|General|H|State the value proposition prominently, with a tagline or welcome message that resonates with users
+HOME|General|H|Include meaningful, high-quality visuals (not clip art or stock models) to enhance trust and aesthetics
+HOME|General|H|Showcase clear CTAs (e.g., "Shop for Men," "Shop for Women") that are visually prominent above the fold
+HOME|General|H|Display key deals, special offers, or urgency-driven promotions near the top of the homepage
+HOME|General|H|Highlight the main benefits of shopping with your store (e.g., "Vegan Friendly," "We Give Back to Charity")
+HOME|General|H|Feature important product categories, with descriptive photos and clear links near the top of the page
+HOME|General|H|Use special category pages for promotions, such as "Best Sellers" or "30% Off" to help users find deals easily
+HOME|General|M|List the most important products with links that make it easy for users explore further
+HOME|General|M|Provide a clear option to contact customer support, including live chat, email, or phone number
+HOME|General|M|Display recently viewed items for returning visitors, making it easy to pick up where they left off
+HOME|General|M|Tell the brand's story, highlighting the mission, vision, and founder's story to build emotional connection
+HOME|Social proof|H|Show customer reviews or product-specific feedback to build trust in the store's offerings
+HOME|Social proof|H|Feature overall store ratings from authoritative sites (e.g., Trustpilot, Reviews.com) to enhance credibility
+HOME|Social proof|H|Showcase trust badges, awards, or certifications earned by the store to reinforce quality and reliability
+HOME|Social proof|H|Highlight logos of news sites, blogs, or influencers that have featured or praised your brand
+HOME|Social proof|H|Include user-generated content, such as photos from Instagram or other social platforms, to show real customers
+CAT|General|H|Let users sort by "Best-sellers," "Price," "New Items," etc.
+CAT|General|M|Make the sorting feature easy to find in the top-right corner
+CAT|General|H|Use clear and simple category names
+CAT|General|L|Design the page with the right layout (grid for visuals, list for details)
+CAT|General|L|Show how many products are in the category
+CAT|General|H|Add a short description about the category (with a "Read more" option)
+CAT|General|H|Keep the user's scroll position when they go back from a product page
+CAT|General|H|Keep filters visible while scrolling (sticky filters)
+CAT|General|H|Use pagination or infinite scroll, whichever suits the site best
+CAT|General|M|Make sure there's a helpful search bar always available
+CAT|General|M|Remind users of the last category they visited for quick navigation
+CAT|Product cards|H|Keep the product card design consistent
+CAT|Product cards|H|Make the whole product card clickable, not just the image
+CAT|Product cards|M|Allow users to zoom on product images when hovering
+CAT|Product cards|L|Show alternate product images on hover (e.g., front, back)
+CAT|Product cards|H|Display original price and discount price clearly
+CAT|Product cards|M|Show "Low Stock" or "Limited Availability" labels
+CAT|Product cards|M|Display star ratings and number of reviews on each product
+CAT|Product cards|H|Highlight "Best Seller" or "New" badges on top products
+CAT|Product cards|H|Let users add products to their cart from the category page
+CAT|Product cards|H|Let users save products for later or add to wishlist from the category page
+CAT|Product cards|H|Show available product colors, sizes, or variants directly on hover
+CAT|Product cards|H|Highlight discounts with bold badges (e.g., "-20%")
+CAT|Product cards|M|Show estimated delivery dates for each product
+CAT|Product cards|M|Display social proof (e.g., "5 people bought this recently")
+CAT|Product cards|H|Show "Free Shipping" badges if the product qualifies
+CAT|Filters|H|Update the product count dynamically when filters are applied
+CAT|Filters|H|Let users select multiple filters (e.g., multiple sizes or colors)
+CAT|Filters|M|Make filters easy to use on mobile devices
+CAT|Filters|H|Add a price range slider to filter products
+CAT|Filters|M|Let users filter by ratings and customer reviews
+CAT|Filters|L|Add an "In Stock" filter for quick navigation
+CAT|Personalisation|M|Show recommended products based on browsing or purchase history
+CAT|Personalisation|H|Display relevant products based on the user's location
+CAT|Personalisation|L|Dynamically show "Best Sellers" based on current data
+CAT|Personalisation|H|Add a banner with "You Recently Viewed" products
+CAT|Usability|H|Optimize the page to load in 2-3 seconds or less
+CAT|Usability|M|Make sure the page works perfectly on mobile devices
+CAT|Usability|M|Test all filters and sorting options to ensure no bugs
+CAT|Usability|M|Add options to view more products per page (e.g., show 20/50/100)
+CAT|Usability|L|Add breadcrumb navigation at the top for easy backtracking
+CAT|CTA|H|Ensure "Add to Cart" and "View Product" buttons are prominent
+CAT|CTA|H|Show a mini-cart when an item is added with a "Checkout" button
+CAT|CTA|M|Encourage users to register for an account for exclusive offers
+CAT|Security|H|Display trust badges like SSL or payment security certifications
+CAT|Security|H|Make sure the privacy policy is easy to find on the page
+LP|General|H|Provide an option for customers to easily ask questions (e.g., live chat, contact form, phone)
+LP|General|H|Make the "Buy Now" button skip the cart and take users directly to checkout to reduce friction
+LP|General|H|Remove any distracting or unnecessary outgoing links (e.g., clickable logo, navigation, footer)
+LP|General|H|Use sticky navigation that stays visible as users scroll, keeping the product name, price, and CTA
+LP|Product overview|H|Use descriptive product titles that clearly communicate the product's key attributes
+LP|Product overview|H|Ensure the product title is under 65 characters for better display in Google search results
+LP|Product overview|H|Highlight product benefits with power words (e.g., "Effortless," "Incredible," "Absolute best")
+LP|Product overview|H|Show product ratings and reviews near the product title to establish trust
+LP|Product overview|H|Provide a short list of product benefits next to the product title, linking to a more detailed section
+LP|Image gallery|H|Standardize the page layout (e.g., photo gallery on the left, description and CTA on the right)
+LP|Image gallery|H|Ensure the main product photo is clear, attractive, and high quality
+LP|Image gallery|H|Allow users to zoom in on product photos for better visibility (especially on mobile)
+LP|Image gallery|H|Include a product gallery with multiple angles or close-up shots
+LP|Image gallery|H|Show thumbnail images of other available product options (e.g., colors, sizes)
+LP|Image gallery|M|Embed product videos in the gallery to demonstrate the product in use
+LP|Image gallery|H|Include arrows or swipes for easy navigation between images in the gallery
+LP|Image gallery|H|Make sure the product gallery supports mobile-friendly swipe actions
+LP|Image gallery|H|Display images for all product variants (e.g., sizes, colors) to provide a full view of options
+LP|CTA area|H|Place the CTA (Add to Cart or Buy Now) in a prominent position that is always visible
+LP|CTA area|H|Ensure the main CTA stands out visually with a contrasting color and clear wording
+LP|CTA area|H|Show urgency triggers near the CTA (e.g., "Only 2 left in stock")
+LP|CTA area|H|Include a secondary CTA like "Buy Now" for users looking to skip the cart process
+LP|CTA area|H|Provide social proof near the CTA (e.g., "10 people have bought this today")
+LP|CTA area|M|Add trust signals near the CTA (e.g., "Secure Checkout," "Money-back Guarantee")
+LP|CTA area|H|Make the CTA sticky so it remains visible as users scroll through the page
+LP|CTA area|M|Offer an option to select product variants (size, color) near the CTA for easier purchasing
+LP|CTA area|H|Include free shipping or delivery information next to the CTA, especially if it's an incentive
+LP|Pricing|H|Display pricing clearly, highlighting discounts if applicable (e.g., "Was $100, Now $80")
+LP|Pricing|H|Offer a limited-time discount or promotion, with a countdown timer if relevant
+LP|Pricing|H|Highlight installment payment or financing options (e.g., "Pay in 4 easy installments")
+LP|Pricing|H|Make discount codes or special offers easily accessible on the landing page
+LP|Pricing|H|Show loyalty program incentives (e.g., "Earn 10 points with this purchase")
+LP|Testimonials|H|Add top-rated customer reviews and testimonials near the CTA area to build trust
+LP|Testimonials|H|Display user-generated photos or videos of customers using the product
+LP|Testimonials|H|Include a testimonial carousel showing quotes from happy customers
+LP|Testimonials|H|Highlight star ratings prominently, making it easy for visitors to see the product's popularity
+LP|Form elements|H|Keep forms short and simple, only asking for essential information
+LP|Form elements|H|Use multi-step forms to avoid overwhelming users with too many fields at once
+LP|Form elements|H|Offer auto-fill options for contact details, especially for mobile users
+LP|Form elements|H|Include inline validation so users can correct mistakes as they fill out the form
+LP|Form elements|H|Display privacy and security badges near the form to reassure customers their data is safe
+LP|Speed & mobile|H|Optimize page speed so the landing page loads in under 2-3 seconds, especially on mobile
+LP|Speed & mobile|H|Ensure the page is fully responsive, adapting to all screen sizes (mobile, tablet, desktop)
+LP|Speed & mobile|H|Test all interactive elements (e.g., sliders, videos, buttons) to make sure they work smoothly
+LP|Speed & mobile|H|Make CTA buttons large and easy to tap for mobile users, minimizing the chance of mis-clicks
+LP|Trust|H|Show SSL certificates and security badges near the checkout button or form to boost trust
+LP|Trust|H|Include trust badges (e.g., "Free Returns," "100% Satisfaction Guarantee") in key areas
+LP|Trust|H|Add a privacy policy link near the bottom of the page to reassure users their information is safe
+LP|Trust|H|Display recognized payment options (e.g., PayPal, Visa, Mastercard) clearly on the page
+LP|Additional content|H|Embed a product demo video to showcase the product in use
+LP|Additional content|H|Provide a FAQ section directly on the landing page to answer common questions
+LP|Additional content|H|Include a comparison chart if multiple product options exist (e.g., different models, sizes, etc)
+LP|Additional content|H|Add a related products section to encourage further browsing and cross-sell opportunities
+LP|Additional content|H|Highlight any free bonuses or extras that come with the purchase (e.g., free ebook, guide)
+LP|Additional content|H|Display how many units are left (especially for limited editions or high-demand items)
+LP|Additional content|H|Show return policy information clearly to ease buyer hesitation
+LP|Geo-targeting|H|Use geo-targeted content to show relevant offers based on the user's location (e.g., shipping availability, regional discounts)
+LP|Geo-targeting|H|Personalize the landing page with dynamic content based on previous user behavior or browsing history (e.g., showing recommended products)
+LP|Exit-intent & retargeting|H|Use exit-intent popups with a special discount or offer when users are about to leave the page
+LP|Exit-intent & retargeting|H|Retarget users with personalized ads if they leave the page without completing the purchase
+LP|SEO & analytics|H|Ensure the landing page is SEO optimized with relevant keywords in the title, headings, and meta descriptions
+LP|SEO & analytics|H|Add structured data (schema markup) to improve how the page appears in search results
+LP|SEO & analytics|H|Include Google Analytics tracking to monitor landing page performance
+LP|SEO & analytics|H|Test different landing page variations (A/B testing) to find what converts best
+LP|SEO & analytics|H|Monitor bounce rates and heatmaps to see how users are interacting with the page
+LP|Usability|H|Use clean, minimal design with plenty of white space to keep the focus on the product and CTA
+LP|Usability|H|Make sure the text is easy to read, using large fonts and high contrast
+LP|Usability|H|Ensure key information (e.g., benefits, CTA) is above the fold so users don't need to scroll to take action
+LP|Usability|H|Keep copy concise and engaging, focusing on how the product solves customer problems
+LP|Usability|H|Ensure images are compressed without losing quality to improve page load speed
+LP|Usability|H|Test different color combinations for buttons and headlines to find the most effective design for conversions
+LP|CTA|H|Use action-oriented language for CTA buttons (e.g., "Get Yours Now," "Claim Discount")
+LP|CTA|H|Test different CTA placements to determine which drives the highest conversion
+LP|CTA|H|Make sure the CTA button appears multiple times on the page, especially if the landing page is long
+LP|CTA|H|Include a guarantee statement (e.g., "30-Day Money Back Guarantee") near the CTA to reduce buying hesitations
+PDP|General|H|Use sticky navigation that keeps the product name, images, sections, availability, and price visible as users scroll
+PDP|General|M|Provide a clear option for customers to ask questions (e.g., live chat, email, phone)
+PDP|General|H|Include breadcrumbs to make it easier for users to navigate back to the category or previous pages
+PDP|General|H|Let customers sign up for email notifications if a product is out of stock, so they know when it's available again
+PDP|General|H|Ensure the back button takes users back to where they were on the previous page (e.g., category page)
+PDP|General|M|Show trust badges (e.g., "Money-back guarantee," "Free returns")
+PDP|General|M|Offer financing or payment plan options directly on the product page
+PDP|General|H|Ensure loading speed is under 2 seconds for mobile and desktop
+PDP|General|H|Provide quick product comparison tools to help customers decide between similar items
+PDP|General|H|Optimize for voice search with clear, concise product descriptions
+PDP|Product overview|H|Write clear, descriptive product titles that accurately describe the product
+PDP|Product overview|H|Keep product titles under 65 characters so they display fully in search engine results
+PDP|Product overview|H|Highlight key product benefits and important features near the title, using action words that encourage users
+PDP|Product overview|H|Display product ratings and reviews prominently near the title to build trust and show social proof
+PDP|Product overview|H|Include a short list of key product benefits or features next to the product title, linked to detailed product descriptions
+PDP|Product overview|H|Add trust elements like "Verified Purchaser" for reviews
+PDP|Product overview|H|Include icons for key features (e.g., waterproof, sustainable material)
+PDP|Product overview|H|Display "Save this item" or "Add to wishlist" options prominently
+PDP|Product overview|H|Ensure product SKU or ID is visible for easy reference
+PDP|Product overview|L|Show availability status and urgency (e.g., "Only 2 left in stock")
+PDP|Product overview|H|Display shipping time estimates and costs clearly
+PDP|Product overview|M|Offer price-match guarantees where relevant
+PDP|Product overview|M|Include "Back in stock" notification signup for sold-out items
+PDP|Product overview|M|Add a size guide link (if applicable) next to size/variant selectors
+PDP|Image gallery|M|Use high-quality main product images that clearly showcase the product
+PDP|Image gallery|M|Allow users to zoom in on product images for a closer look, especially on mobile devices
+PDP|Image gallery|L|Create a gallery with different product images that show various angles (front, side, back) and product variants (colors, sizes)
+PDP|Image gallery|M|Show thumbnail images of all available variants (colors, sizes)
+PDP|Image gallery|L|Show video content in the product gallery, such as demos or customer reviews, for a more interactive experience
+PDP|Image gallery|H|Use swipe functionality on mobile devices to allow users to browse through images easily
+PDP|Image gallery|H|Ensure product images are consistent in quality, size, and style
+PDP|Image gallery|H|Offer a 360-degree view for high-ticket items
+PDP|Image gallery|M|Add AR previews where relevant (e.g., for furniture or fashion)
+PDP|Image gallery|M|Highlight product variants visually (color swatches, size options)
+PDP|CTA area|H|Make the primary CTA button (Add to Cart) easy to find and visually stand out on the page
+PDP|CTA area|M|Show urgency triggers near the CTA, like "Limited stock" or countdown timers to encourage quicker action
+PDP|CTA area|L|Offer a secondary CTA like "Buy Now" for users who want to checkout quickly
+PDP|CTA area|H|Include trust badges (e.g., secure checkout, free returns) near the CTA to reassure customers about the transaction
+PDP|CTA area|L|Display clear delivery estimates based on the user's location, right next to the CTA
+PDP|Pricing|H|Show discounted prices with clear savings (e.g., "Was $120, Now $90")
+PDP|Pricing|M|Highlight seasonal promotions or special offers with badges (e.g., "Limited Time Offer")
+PDP|Pricing|M|Offer bulk pricing or discounts (e.g., "Buy 2, Get 1 Free")
+PDP|Pricing|H|Show financing or installment payment options with clear breakdowns
+PDP|Pricing|M|Make discount codes or vouchers easily accessible directly on the product page
+PDP|Pricing|H|Display a countdown timer for limited-time offers or discounts
+PDP|Pricing|L|Offer personalized discounts (e.g., "10% off your first purchase")
+PDP|Pricing|H|Show price drops or alerts for products that have gone on sale
+PDP|Social proof|H|Highlight top-rated customer reviews near the product title
+PDP|Social proof|H|Add a filter or sorting option for customer reviews (e.g., by rating, most helpful)
+PDP|Social proof|H|Display user-generated photos from real customers alongside reviews
+PDP|Social proof|H|Allow users to rate reviews as helpful or not helpful
+PDP|Social proof|H|Show the percentage of users who recommend the product
+PDP|Social proof|H|Include a review request link for customers who have bought the product
+PDP|Social proof|H|Highlight expert or influencer endorsements for the product
+PDP|Social proof|M|Show testimonials or quotes from satisfied customers
+PDP|Social proof|M|Enable customers to ask questions and receive answers from previous buyers or the brand
+PDP|Social proof|M|Display customer satisfaction ratings with visual elements (e.g., stars or scorecards)
+PDP|Shipping, returns & guarantees|L|Offer free shipping or returns prominently near the product price
+PDP|Shipping, returns & guarantees|L|Display the expected delivery date based on the user's location
+PDP|Shipping, returns & guarantees|L|Show shipping options, including expedited or same-day shipping where available
+PDP|Shipping, returns & guarantees|H|Include a link to the return policy near the product description
+PDP|Shipping, returns & guarantees|M|Highlight any satisfaction or money-back guarantees
+PDP|Shipping, returns & guarantees|M|Provide clear return windows and instructions (e.g., 30-day returns)
+PDP|Shipping, returns & guarantees|M|Show international shipping availability and costs
+PDP|Cross-sell & upsell|H|Display related products or "Customers also bought" sections
+PDP|Cross-sell & upsell|M|Add product recommendations based on browsing history or related categories
+PDP|Cross-sell & upsell|H|Offer a bundle deal or product kit (e.g., "Complete the Look")
+PDP|Cross-sell & upsell|H|Show accessories or add-ons that complement the main product (e.g., chargers, cases)
+PDP|Cross-sell & upsell|H|Highlight subscriptions or repeat purchase options (e.g., for consumables)
+PDP|Cross-sell & upsell|L|Allow for product comparison between similar items (e.g., side-by-side comparisons)
+PDP|Mobile-specific optimization|H|Ensure all product details are easily scrollable on mobile devices
+PDP|Mobile-specific optimization|M|Make product images swipeable for quick browsing
+PDP|Mobile-specific optimization|H|Ensure the Add to Cart button is easily tappable and sticky on mobile
+PDP|Mobile-specific optimization|H|Enable fast, mobile-optimized checkout with Apple Pay, Google Pay, etc.
+PDP|Mobile-specific optimization|H|Ensure images and text resize dynamically for different mobile screen sizes
+PDP|Security|H|Show SSL certificates and secure payment options near the CTA
+PDP|Security|L|Highlight customer protection or buyer protection programs
+PDP|Security|M|Add links to privacy and data protection policies near the payment information
+CART|General|H|Keep the cart design clear and uncluttered, with easy-to-read product information
+CART|General|H|Use urgency triggers (e.g., "Your items are reserved for 10 minutes") to encourage faster checkout
+CART|General|H|Show how close the user is to free shipping, or provide a discount based on their current cart total
+CART|General|H|Retain cart items for returning users so they can easily pick up where they left off
+CART|General|H|Display all important product information in the cart (title, image, chosen variant, quantity, price)
+CART|General|H|Ensure that the correct product image is displayed for the selected variant (e.g., color, size)
+CART|General|M|Allow users to update quantities directly in the cart, with changes automatically reflected
+CART|General|M|Make it easy for users to remove items from their cart with a single click
+CART|General|M|Show the estimated delivery date based on the user's location or shipping method selected
+CART|General|H|Use scarcity triggers next to products (e.g., "Only 1 item left in stock") to increase urgency
+CART|General|H|Provide an easy way for users to get in touch with support (e.g., live chat, email, phone number) if they have questions
+CART|General|H|Include information about returns, refunds, and money-back guarantees directly on the cart page
+CART|General|M|Offer a prominent link to your shipping policy and delivery information
+CART|Discounts & upsells|H|Make it easy to apply discount codes or coupons on the cart page, with clear instructions or a visible field
+CART|Discounts & upsells|M|Display cross-sell or upsell opportunities for complementary products or add-ons
+CART|Discounts & upsells|M|Offer inexpensive upsell/cross-sell products with benefits and urgency (e.g., "Now or never" offer)
+CART|Discounts & upsells|M|Show free shipping thresholds to encourage users to add more items to their cart
+CART|Discounts & upsells|M|Encourage users to "Save for later" rather than abandoning items they're unsure about
+CART|CTA area|M|Ensure the subtotal is clearly visible, near the CTA (Proceed to Checkout) button
+CART|CTA area|M|Show estimated taxes or include tax information based on the user's location
+CART|CTA area|M|Display the amount the user will save on their entire purchase near the main CTA
+CART|CTA area|H|Make the primary CTA (Proceed to Checkout) the most prominent button on the page, with a standout color
+CART|CTA area|M|Include a lock or security icon near the CTA, reassuring users their checkout process is secure
+CART|CTA area|M|Provide options for one-click checkout with popular payment methods like PayPal or Google Pay
+CART|Trust & security|H|Display trust badges and security seals (e.g., SSL, PCI compliance) to build trust in the checkout process
+CART|Trust & security|H|Provide a money-back guarantee badge or return policy reminder to ease customer concerns
+CART|Trust & security|H|Show customer support contact information (e.g., phone number, email) in case of issues during checkout
+CART|UX & mobile|M|Optimize the cart page for mobile users, ensuring buttons and input fields are easily tappable
+CART|UX & mobile|H|Retain items in the cart even if the user leaves the page, allowing them to return and complete their purchase later
+CART|UX & mobile|M|Test the cart page loading speed to ensure fast performance, especially on mobile devices
+CHK|General|H|Allow users to checkout as a guest without requiring account registration to avoid unnecessary friction
+CHK|General|H|Provide clear feedback during the checkout process, such as a progress bar indicating the user's stage
+CHK|General|H|Make sure multi-step checkouts are clear, with clear instructions on what happens after each step
+CHK|General|H|Ensure the form allows users to recover from errors without having to start over
+CHK|General|H|Show a clear order summary immediately before the user commits to the purchase
+CHK|General|H|Place trust badges and seals (e.g., Norton Verified, SSL) near the CTA to reassure users of the checkout's security
+CHK|General|H|Remove unnecessary outgoing links (e.g., navigation, clickable logo) to prevent users from leaving the checkout process
+CHK|General|H|Make the privacy policy easy to find, especially on pages that request personal information
+CHK|General|M|Offer an easy way to contact support during checkout (e.g., live chat, email, phone number)
+CHK|General|H|Ensure the main CTA (Complete Purchase) is the most prominent element on the page
+CHK|General|H|Use Buttons or Buttons Plus an Open Text Field for Updating Cart Quantity
+CHK|General|H|Allow users to save their cart and return to it later without losing items or progress
+CHK|General|H|Display a summary of the total cost, including taxes, shipping fees, and any discounts applied
+CHK|AOV 'boosters'|M|Offer upsell options post-checkout, such as additional items or upgrades with a one-click add-to-cart option
+CHK|AOV 'boosters'|M|Include order bumps (e.g., "Skip the queue," "Urgent shipping," "Gift packaging") to increase AOV
+CHK|AOV 'boosters'|M|Use urgency triggers (e.g., "Your items are reserved for 10 minutes") to encourage quicker completion
+CHK|Payment & security|H|Provide multiple payment options, including credit cards, PayPal, Apple Pay, and other popular methods
+CHK|Payment & security|H|Ensure the checkout process is encrypted with SSL, and show the security seal prominently
+CHK|Payment & security|M|Use a lock icon near the payment section to reassure users that their information is safe
+CHK|Payment & security|L|Offer the ability to save payment details securely for faster checkouts in the future
+CHK|Shipping options|H|Show clear shipping options, including delivery times and costs, directly on the checkout page
+CHK|Shipping options|H|Instead of providing a delivery date range, allow users to immediately understand when they'll receive their order (e.g., "Delivery on April 4th" or "Delivery April 4th-8th")
+CHK|Shipping options|H|The cutoff time should be displayed as a countdown rather than a static time ("Order in the next 43 minutes to receive your order by Tuesday April 4" instead of "Order by 9AM ET to receive your order by Tuesday April 4")
+CHK|Shipping options|H|Allow users to select their preferred shipping method from multiple options (standard, express, etc.)
+CHK|Shipping options|H|List all order fulfillment options on a single checkout page
+CHK|Shipping options|M|Offer free shipping thresholds, and show how much more the user needs to spend to qualify for free shipping
+CHK|Forms & input fields|H|Keep forms simple, asking for only essential information. Mark both required and optional fields explicitly
+CHK|Forms & input fields|H|Use floating labels or placeholders to keep the form fields clear and easy to understand
+CHK|Forms & input fields|H|Offer inline validation to help users correct mistakes in real-time. Improve validation errors with adaptive messages ("Your card number is incomplete" rather than "Your card number is invalid")
+CHK|Forms & input fields|H|Explain why a phone number is required ("In case there's a billing issue", "We never share your number with anyone")
+CHK|Forms & input fields|H|Enable auto-fill for commonly used fields, such as shipping address and email
+CHK|Forms & input fields|M|Provide easy-to-navigate dropdowns for country, state, and city selections
+CHK|Forms & input fields|H|Show estimated taxes and fees in real-time as users fill out the form
+CHK|Log in & registration|H|Allow users to log in easily to pre-fill their information if they have an existing account. Avoid overly complex password-creation requirements (only requirement: a minimum of 6 characters)
+CHK|Log in & registration|M|Ensure the password recovery process is simple in case users forget their login information
+CHK|Log in & registration|M|Let users create an account post-purchase, offering the option to save their details for future transactions
+CHK|Order confirmation|H|Show a clear order confirmation message immediately after purchase, outlining the next steps
+CHK|Order confirmation|H|Send a detailed order confirmation email that includes a summary of the order, shipping details, and support info
+CHK|Order confirmation|M|Provide a downloadable receipt or invoice on the confirmation page
+CHK|Mobile optimization|H|Ensure the checkout page is fully optimized for mobile, with large, tappable buttons and easy-to-use input fields
+CHK|Mobile optimization|H|Test the checkout process on different devices to ensure consistency and usability
+CHK|Mobile optimization|H|Provide mobile-friendly payment options, such as Apple Pay and Google Pay
+CHK|Trust & social proof|H|Add customer reviews or testimonials near the checkout area to reassure users that others have had a good experience
+CHK|Trust & social proof|H|Display a trust badge near the checkout button, confirming secure payment and satisfaction guarantees
+CHK|Trust & social proof|M|Use a satisfaction guarantee badge to reduce hesitations at the final stage of checkout
+TYP|General|M|Congratulate the customer on completing their purchase and clearly state that the order was successful
+TYP|General|H|Summarize the order details (product names, quantities, prices) so the customer can easily review what they bought
+TYP|General|H|Provide a clear delivery or shipping estimate that tells the customer when their package will arrive
+TYP|General|M|Offer easy ways for the customer to get in touch with the store owner or customer support (e.g., live chat, email)
+TYP|General|L|Include package tracking information or explain how the customer can track their order
+TYP|General|L|Add a thank you message to make the customer feel appreciated and valued
+TYP|AOV boosters|M|Show additional product recommendations or suggest complementary items that the customer may like
+TYP|AOV boosters|H|Offer a discount code or coupon for their next purchase, and suggest they share it with a friend or family member
+TYP|AOV boosters|H|Display a summary of the entire purchase in a confirmation email, including product details, potential savings, and total cost
+TYP|AOV boosters|M|Encourage customers to refer a friend by offering them a referral bonus or discount for future purchases
+TYP|AOV boosters|L|Highlight limited-time offers (e.g., "Get 10% off on your next purchase if made within 48 hours") to encourage repeat business
+TYP|AOV boosters|L|Ask the customer to join your loyalty program to earn points or rewards for future purchases
+TYP|AOV boosters|M|Provide an option to upgrade their shipping method for faster delivery before the order is fully processed
+TYP|Social proof|H|Encourage the customer to follow your brand on social media by displaying links or a CTA, offering them exclusive content
+TYP|Social proof|H|Ask for a review or feedback about the purchasing process or their experience so far, even before the product arrives
+TYP|Social proof|H|Share user-generated content from other happy customers (e.g., reviews, photos of them using the product) to build trust
+TYP|Social proof|L|Invite the customer to join your email newsletter for exclusive offers, product launches, or content related to their purchase
+TYP|Personalization|H|Personalize the thank you message with the customer's name and possibly the product they purchased
+TYP|Personalization|H|Offer post-purchase support or instructions on how to use the product, especially if it requires setup or assembly
+TYP|Personalization|H|Provide a FAQ section relevant to the customer's order (e.g., common delivery questions or product-specific tips)
+TYP|Personalization|L|Invite customers to download a product guide or setup manual if applicable, directly from the thank you page
+TYP|Community building|L|Invite customers to join an online community (e.g., a Facebook group, forum, or exclusive club) where they can connect with other users
+TYP|Community building|L|Share how their purchase supports a cause (if applicable), such as donations to charity, eco-friendly initiatives, etc.

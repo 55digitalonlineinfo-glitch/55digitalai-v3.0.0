@@ -1,0 +1,17 @@
+{
+  "acme": {
+    "name": "Acme Example Co.",
+    "domain": "acme.example",
+    "customer_id": "0000000000",
+    "country": "US",
+    "timezone": "America/New_York",
+    "monthly_budget": 5000.0,
+    "currency": "USD",
+    "business_type": "lead_gen",
+    "ga4_property_id": null,
+    "negative_list_id": null,
+    "merchant_center_id": null,
+    "pmax_branded_generic_list_id": null,
+    "links": {}
+  }
+}

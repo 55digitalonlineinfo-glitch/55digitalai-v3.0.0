@@ -1,0 +1,23 @@
+# 55DigitalAI — Google Ads API credentials
+# =============================================================
+# Copy this file to "google-ads.yaml" (gitignored — never commit the real one)
+# and fill in your own values. This toolkit reads credentials from this file,
+# not from environment variables.
+#
+# Setup:
+#   1. Apply for a Google Ads API developer token (Basic access is enough for
+#      one agency/MCC managing its own client accounts):
+#      https://developers.google.com/google-ads/api/docs/first-call/dev-token
+#   2. Create OAuth2 credentials (client_id/client_secret) in a Google Cloud
+#      project: https://developers.google.com/google-ads/api/docs/oauth/cloud-project
+#   3. Run `python3 scripts/get_google_refresh_token.py` — it reads
+#      client_id/client_secret below, opens a browser to authenticate, and
+#      prints your refresh_token. Paste it in below.
+#   4. login_customer_id is your MCC (manager account) ID, no dashes.
+
+developer_token: "YOUR_DEVELOPER_TOKEN"
+client_id: "YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com"
+client_secret: "YOUR_OAUTH_CLIENT_SECRET"
+refresh_token: "YOUR_REFRESH_TOKEN"
+login_customer_id: "YOUR_MCC_ID"
+use_proto_plus: True

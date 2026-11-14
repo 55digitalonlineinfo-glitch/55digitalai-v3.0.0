@@ -1,0 +1,71 @@
+55DigitalAI — Proprietary Software License
+
+Copyright (c) 55Digital. All rights reserved.
+
+This is a DRAFT commercial license, provided as a starting point only.
+It is not legal advice — have a lawyer review and adapt it (in particular
+the Governing Law section below) before relying on it for actual sales.
+
+1. GRANT OF LICENSE
+   Subject to payment of the applicable license fee and issuance of a valid
+   license key by 55Digital ("Licensor"), Licensor grants the purchaser
+   ("Licensee") a non-exclusive, non-transferable license to install and use
+   this software ("the Toolkit") for Licensee's own advertising agency or
+   business, to manage Google Ads accounts Licensee is authorized to access.
+
+   One license key corresponds to one agency/business. Licensee may install
+   the Toolkit on machines it controls for that single agency's own use.
+
+2. OWNERSHIP
+   The Toolkit, including all source code, documentation, and associated
+   materials, remains the sole property of Licensor. This license grants a
+   right to use the Toolkit — it does not transfer any ownership or
+   intellectual property rights.
+
+3. RESTRICTIONS
+   Licensee may NOT:
+   a. Resell, sublicense, rent, lease, or otherwise redistribute the Toolkit
+      or its source code to any third party, whether modified or unmodified;
+   b. Use the Toolkit to provide services to, or manage accounts on behalf
+      of, a different agency or business than the one the license was issued
+      to, except where Licensee's own agency is directly managing a client's
+      ad account as part of its normal service offering;
+   c. Remove, disable, or circumvent the license-key verification mechanism;
+   d. Share a license key with any party outside the licensed agency.
+
+4. LICENSE KEY VERIFICATION
+   The Toolkit checks its license key against Licensor's license server at
+   setup time. This check is a deterrent against casual key-sharing, not a
+   hard technical lock — the Toolkit is designed to fail open (continue
+   working) if the license server is briefly unreachable, so a network
+   hiccup does not block a paying Licensee's legitimate use. Confirmed
+   invalid or revoked keys will block setup.
+
+5. NO WARRANTY
+   THE TOOLKIT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. LICENSEE IS SOLELY
+   RESPONSIBLE FOR REVIEWING ANY AI-GENERATED OR AUTOMATED ACTIONS (E.G.
+   NEGATIVE KEYWORDS, BID CHANGES) BEFORE THEY AFFECT A LIVE ADVERTISING
+   ACCOUNT.
+
+6. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
+   SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING FROM THE USE OF THE TOOLKIT,
+   INCLUDING BUT NOT LIMITED TO LOST ADVERTISING SPEND, LOST REVENUE, OR
+   ACCOUNT SUSPENSION BY A THIRD-PARTY PLATFORM (E.G. GOOGLE).
+
+7. TERMINATION
+   This license terminates automatically if Licensee breaches any of the
+   restrictions in Section 3. Upon termination, Licensee must stop using the
+   Toolkit and delete all copies in its possession.
+
+8. UPDATES AND SUPPORT
+   Terms for updates and support (if any) are as separately agreed at time
+   of purchase and are not covered by this license.
+
+9. GOVERNING LAW
+   [ Fill in: this license is governed by the laws of ___________, without
+   regard to its conflict-of-law provisions. ]
+
+By using the Toolkit, Licensee agrees to the terms above.

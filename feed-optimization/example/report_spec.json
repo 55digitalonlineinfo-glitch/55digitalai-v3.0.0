@@ -1,0 +1,262 @@
+{
+ "client": "Demo Brand (example)",
+ "lang": "en",
+ "currency": "€",
+ "date_label": "October 2026",
+ "product_noun": "coffee machines",
+ "period": "01.10.2025 - 30.09.2026",
+ "brand": {
+  "primary": "#D6893E",
+  "primary_light": "#F0B072",
+  "bg": "#15120f",
+  "bg2": "#1d1915",
+  "secondary": "#8a7e70",
+  "font": "Inter Tight",
+  "logo": "img/logo.png",
+  "source": "fictional example brand"
+ },
+ "kpis": {
+  "terms": 48210,
+  "conv_value": 1124600,
+  "kp_terms": 12
+ },
+ "title_formula": {
+  "chips": [
+   "Best-selling phrase",
+   "Brand and model",
+   "Key feature"
+  ],
+  "example": "Bean to cup coffee machine with grinder Demo Brand A300 Milk | with milk frother, 15 bar"
+ },
+ "rules": [
+  "The most important phrases go in the first ~50 characters, because that is usually all Google shows in a Shopping ad.",
+  "The brand stays in the visible part of the title, but after the phrase that sells.",
+  "Every title stays within the 150-character limit.",
+  "Descriptions: main phrase first, supporting phrases once each, no promotional claims."
+ ],
+ "keyword_planner": [
+  [
+   "coffee machine",
+   74000
+  ],
+  [
+   "espresso machine",
+   22200
+  ],
+  [
+   "bean to cup coffee machine",
+   18100
+  ],
+  [
+   "coffee machine with grinder",
+   9900
+  ],
+  [
+   "coffee machine for home",
+   6600
+  ],
+  [
+   "espresso machine with grinder",
+   5400
+  ],
+  [
+   "coffee machine with milk frother",
+   2900
+  ],
+  [
+   "demo brand",
+   2400
+  ],
+  [
+   "manual espresso machine",
+   2400
+  ],
+  [
+   "coffee bean machine",
+   1600
+  ],
+  [
+   "compact coffee machine",
+   720
+  ],
+  [
+   "15 bar espresso machine",
+   590
+  ]
+ ],
+ "kp_insights": [
+  [
+   "18 100",
+   "“Bean to cup coffee machine” is the biggest phrase that describes exactly this type of product."
+  ],
+  [
+   "9 900",
+   "“With grinder” is a feature customers actively search for."
+  ],
+  [
+   "2 400",
+   "The brand itself is searched regularly, so it stays in the visible part of the title."
+  ]
+ ],
+ "kp_note": "Volume alone is not enough: a popular phrase doesn't necessarily sell. That's why step 2 checks which phrases actually brought in sales.",
+ "themes": [
+  [
+   "bean to cup / automatic",
+   18420,
+   31.2,
+   82150,
+   "Start of the title",
+   "up"
+  ],
+  [
+   "with grinder",
+   15210,
+   24.6,
+   61340,
+   "Right after “bean to cup”",
+   "up"
+  ],
+  [
+   "portafilter / manual",
+   11080,
+   12.3,
+   33870,
+   "Start of title (manual models)",
+   "up"
+  ],
+  [
+   "milk frother / latte",
+   9640,
+   9.8,
+   24120,
+   "In the title as a feature",
+   "up"
+  ],
+  [
+   "for home",
+   6830,
+   6.2,
+   12480,
+   "Added to descriptions",
+   "mid"
+  ],
+  [
+   "compact / small",
+   4120,
+   3.1,
+   5210,
+   "Not highlighted",
+   "mid"
+  ]
+ ],
+ "ads_insights": [
+  [
+   "82 150 €",
+   "“Bean to cup” brought in the most sales of all themes, more than plain “espresso machine”, despite lower volume."
+  ],
+  [
+   "4.5",
+   "“With grinder” returned 4.5 € in sales for every euro spent."
+  ],
+  [
+   "12 480 €",
+   "“For home” is how customers describe the machine in their own words, so it went into the descriptions."
+  ]
+ ],
+ "top_terms": [
+  [
+   "bean to cup coffee machine with grinder",
+   12.4,
+   38210
+  ],
+  [
+   "automatic coffee machine",
+   8.1,
+   24970
+  ],
+  [
+   "manual espresso machine for home",
+   5.2,
+   17340
+  ],
+  [
+   "coffee machine with grinder",
+   6.0,
+   15880
+  ],
+  [
+   "coffee bean machine",
+   2.1,
+   7260
+  ]
+ ],
+ "brand_share": {
+  "brand_value": 874300,
+  "generic_value": 250300
+ },
+ "changes": {
+  "added": [
+   "“bean to cup with grinder” and “portafilter” at the start of the title",
+   "each model's key feature at the end of the title",
+   "“for home” in the descriptions"
+  ],
+  "removed": [
+   "promotional claims (“brand new”, “you'll love”) and anything not confirmed on the product page"
+  ]
+ },
+ "highlight": [
+  "bean to cup coffee machine with grinder",
+  "espresso machine with portafilter",
+  "espresso machine for home",
+  "manual espresso machine",
+  "coffee bean machine",
+  "with grinder",
+  "milk frother",
+  "portafilter"
+ ],
+ "labels": {
+  "ba_sub": "Highlighted: phrases chosen based on steps 1 and 2. “Before” for the description is the start of the current product-page description."
+ },
+ "products": [
+  {
+   "id": "101",
+   "name": "Demo Brand A300 Milk",
+   "sales": 184250,
+   "old_title": "Demo Brand A300 Milk coffee machine",
+   "old_desc": "Demo Brand A300 Milk - brand new in our range! Meet the machine you'll love from the very first cup. Automatic milk frother, 15 bar pressure...",
+   "new_title": "Bean to cup coffee machine with grinder Demo Brand A300 Milk | with milk frother, 15 bar",
+   "new_desc": "Bean to cup coffee machine with grinder Demo Brand A300 Milk is a 15 bar espresso machine for home. Key feature: automatic milk frother. This coffee bean machine grinds fresh beans right before brewing. Black finish.",
+   "image": "img/101.png"
+  },
+  {
+   "id": "102",
+   "name": "Demo Brand A200",
+   "sales": 141780,
+   "old_title": "Demo Brand A200 coffee machine",
+   "old_desc": "Demo Brand A200 - brand new in our range! Meet the machine you'll love from the very first cup. Ceramic grinder with 12 settings, 15 bar pressure...",
+   "new_title": "Bean to cup coffee machine with grinder Demo Brand A200 | with ceramic grinder, 15 bar",
+   "new_desc": "Bean to cup coffee machine with grinder Demo Brand A200 is a 15 bar espresso machine for home. Key feature: ceramic grinder with 12 settings. This coffee bean machine grinds fresh beans right before brewing. Black finish.",
+   "image": "img/102.png"
+  },
+  {
+   "id": "103",
+   "name": "Demo Brand M1",
+   "sales": 126400,
+   "old_title": "Demo Brand M1 coffee machine",
+   "old_desc": "Demo Brand M1 - brand new in our range! Meet the machine you'll love from the very first cup. 58 mm portafilter and pressure gauge, 15 bar pressure...",
+   "new_title": "Espresso machine with portafilter Demo Brand M1 | with pressure gauge, 15 bar",
+   "new_desc": "Espresso machine with portafilter Demo Brand M1 is a 15 bar espresso machine for home. Key feature: 58 mm portafilter and pressure gauge. A manual espresso machine for pulling espresso yourself. Black finish.",
+   "image": "img/103.png"
+  },
+  {
+   "id": "104",
+   "name": "Demo Brand C1",
+   "sales": 98320,
+   "old_title": "Demo Brand C1 coffee machine",
+   "old_desc": "Demo Brand C1 - brand new in our range! Meet the machine you'll love from the very first cup. Only 18 cm wide, 15 bar pressure...",
+   "new_title": "Bean to cup coffee machine with grinder Demo Brand C1 | compact, 18 cm wide, 15 bar",
+   "new_desc": "Bean to cup coffee machine with grinder Demo Brand C1 is a 15 bar espresso machine for home. Key feature: only 18 cm wide. This coffee bean machine grinds fresh beans right before brewing. Black finish.",
+   "image": "img/104.png"
+  }
+ ]
+}
