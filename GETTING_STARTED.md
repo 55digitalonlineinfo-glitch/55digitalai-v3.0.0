@@ -172,13 +172,20 @@ The `--pdf` flag produces a branded PDF report you could hand to a client, saved
 ```
 Then find `dashboard/index.html` in your file explorer (Finder on Mac, File Explorer on Windows) and double-click it — it opens directly in your regular web browser. This is a private, local page — no server, no internet connection needed — showing every client, every report, and every change the toolkit has ever made to your accounts.
 
+Each client opens into tabs: **Overview** (status today, budget pacing, month vs. month), **Daily Check**, **Reports**, **Negatives** (every negative the audits added, plus other logged changes) and **Scripts**. The moon button switches to dark mode.
+
+Optional extras:
+- **Client logos** instead of initials: `.venv/bin/python3 scripts/fetch_client_logos.py` downloads each client's site icon to `clients/<slug>/logo.png` (or `--file <slug> path/to/logo.png` for one you saved yourself). Rebuild the dashboard afterwards.
+- **Archive a client** you no longer manage: add `"archived": true` to its entry in `clients.json`. It moves to an "Archived" list in the sidebar and drops out of the totals.
+- **Client report link**: add `"report_url": "https://..."` to a client in `clients.json` to show a "Monthly report" link on its page.
+
 ---
 
 ## What's safe vs. what needs care
 
 - **Always safe, changes nothing:** `/55-daily-check`, `/keyword-research`, `/ga4-data-analyst`, `/ga4-campaign-analyst`, `/merchant-review`, `/seasonality`, `/55-feed-title-optimizer`, `/55-merchant-policy-check`, `/55-cro-audit`, `/55-seo-audit`, `/55-web-guidelines-audit` — these only ever read data (the website ones fetch public pages; they never touch the site, Merchant Center or Google Ads).
 - **Can write to your account, but only with your explicit OK:** `/55-keyword-audit`, `/keyword-expansion`, `/55-pmax-brand-generic-audit`, `/55-pmax-bucketing`. Every one of these shows you the *exact* list of what it wants to change and waits for you to approve it — and even the underlying scripts refuse to write anything unless you separately pass `--confirm`. If you never say yes, nothing changes.
-- Every actual change ever made is recorded — see it any time with `.venv/bin/python3 scripts/change_log.py show <client_slug>`, or in the dashboard's **Changes** tab.
+- Every actual change ever made is recorded — see it any time with `.venv/bin/python3 scripts/change_log.py show <client_slug>`, or in the dashboard's **Negatives** tab ("Other logged changes").
 
 ## Adding another client later
 

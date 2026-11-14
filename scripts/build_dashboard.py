@@ -10,6 +10,13 @@ Purpose  : Scans clients/*/ (client-brief.md, reports/, scripts/) and
 Usage    : python3 scripts/build_dashboard.py
 Output   : dashboard/index.html
 Changelog: 2026-07-18  Initial version
+           2026-11-12  Slimmed output (was 14 MB): index.html now holds only metadata
+                       + stats; heavy per-client data (brief, changes, last 30 days of
+                       log text) goes to dashboard/data/<slug>.js, loaded on demand.
+                       Client report HTML pages are no longer embedded - the dashboard
+                       links to the client's "report_url" (clients.json) instead; old
+                       drafts/previews are skipped. New look: floating dark sidebar with
+                       client logos, dark mode, archived clients ("archived": true).
 """
 
 import json
@@ -18,7 +25,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[1]
 CLIENTS_DIR = ROOT / "clients"
 OUT_DIR = ROOT / "dashboard"
 TEMPLATE = ROOT / "scripts" / "dashboard_template.html"
@@ -32,6 +39,11 @@ REPORT_TYPE_RE = re.compile(
     r"^(?P<type>keywords_audit|pmax_audit|pmax_brand_generic_audit|best_sellers_rotate|feed_audit|full_account_audit|daily_check)_"
     r"(?P<date>\d{4}-\d{2}-\d{2})(?:_(?P<time>\d{2}-\d{2}))?\.(?:log|md)$"
 )
+
+LOG_EMBED_DAYS = 30          # log text older than this is not embedded (stats are kept)
+LOG_EMBED_MAX_BYTES = 200_000  # larger text files are never embedded
+# Client report HTML: keep only <slug>.html and <slug>-YYYY-MM.html, skip drafts/previews/backups
+KEEP_HTML_RE = re.compile(r"^(?P<slug>[a-z0-9]+)(?:-\d{4}-\d{2})?\.html$")
 
 REPORT_TYPE_LABELS = {
     "keywords_audit": "Negative Keyword Audit",
@@ -48,7 +60,8 @@ def parse_report_stats(report_type: str, content: str) -> dict:
     """Pull a few headline numbers out of a report body for list-view summaries."""
     stats = {}
     if report_type in ("keywords_audit", "pmax_audit"):
-        m = re.search(r"Negated this run:\s*(\d+)", content)
+        # keyword audit: "Negated this run: N"; PMax audit: "Terms negated      : N"
+        m = re.search(r"Negated this run:\s*(\d+)", content) or re.search(r"Terms negated\s*:\s*(\d+)", content)
         if m:
             stats["negated"] = int(m.group(1))
         m = re.search(r"Terms reviewed:\s*(\d+)", content)
@@ -182,11 +195,19 @@ def parse_daily_check_pulse(content: str) -> dict:
             pulse["conversion_flags"].append({"campaign": entry["name"], "message": entry["message"]})
 
     pulse["budget_campaigns"] = [
-        {"campaign": name.strip(), "lost_is_pct": int(pct), "message": message.strip()}
-        for name, pct, message in re.findall(
-            r"  ([^\n]+)\n    Impression share lost to budget limits: (\d+)%\n    \[FLAG\] (.+)",
+        {"campaign": name.strip(), "lost_is_pct": int(pct),
+         "lost_rank_pct": int(rank) if rank else None, "message": message.strip()}
+        for name, pct, rank, message in re.findall(
+            r"  ([^\n]+)\n    Impression share lost to budget limits: (\d+)%\n"
+            r"(?:    Impression share lost to ad rank: (\d+)%\n)?    \[FLAG\] (.+)",
             budget_sec,
         )
+    ]
+    # won / lost-to-budget / lost-to-rank per Search campaign (logs from 2026-11-12 on)
+    pulse["impression_share"] = [
+        {"campaign": name.strip(), "won": int(won), "lost_budget": int(lb), "lost_rank": int(lr)}
+        for name, won, lb, lr in re.findall(
+            r"    IS \| (.+) \| won (\d+)% \| lost to budget (\d+)% \| lost to rank (\d+)%", budget_sec)
     ]
 
     sec3_m = re.search(r"## 3\. COST / CPA ANOMALIES(.*?)\n## 4\.", body, re.DOTALL)
@@ -299,16 +320,50 @@ def scan_scripts(scripts_dir: Path) -> list:
                     break
                 if stripped != "":
                     break
+        title, summary, when, writes = SCRIPT_INFO.get(f.name, (None, None, None, None))
+        if summary is None:
+            # unknown script: first sentence of "Purpose", else the first header line
+            head = "\n".join(header_lines)
+            m = re.search(r"Purpose\s*:\s*(.+?)(?:\n\s*\n|\n[A-Z][a-z]+\s*:|$)", head, re.S)
+            text = re.sub(r"\s+", " ", m.group(1) if m else (header_lines[0] if header_lines else "")).strip()
+            summary = re.split(r"(?<=\.)\s", text)[0][:220]
         out.append({
             "filename": f.name,
             "ext": f.suffix.lstrip("."),
-            "header": "\n".join(header_lines).strip(),
+            "title": title or f.stem.replace("_", " ").capitalize(),
+            "summary": summary,
+            "when": when,
+            "writes": writes,
             "size_bytes": f.stat().st_size,
         })
     return out
 
 
-def scan_reports(reports_dir: Path) -> list:
+
+# Plain-language cards for the Scripts tab, keyed by file name. "when" = how it is started,
+# "writes" = whether it changes anything in the ad account / Merchant Center.
+SCRIPT_INFO = {
+    "run_audit.sh": ("Negative keyword audit",
+        "Reads recent search terms, judges each one against the client brief with AI and adds the irrelevant ones as negative keywords.",
+        "Automatic, on the schedule set with /55-setup-keyword-audit-automation", True),
+    "run_pmax_audit.sh": ("PMax search term audit (scheduled)",
+        "Starts the Performance Max irrelevant search term audit on its schedule.",
+        "Automatic, on the schedule set with /55-setup-pmax-audit-automation", True),
+    "run_pmax_brand_generic_audit.sh": ("PMax brand/generic audit (scheduled)",
+        "Starts the PMax brand/generic search term audit on its schedule.",
+        "Automatic, on the schedule set with /55-setup-pmax-brand-generic-audit-automation", True),
+    "pmax_brand_generic_audit.py": ("PMax brand/generic search term audit",
+        "Branded campaign: blocks terms without a brand mention. Generic campaigns: blocks irrelevant terms.",
+        "Started by the scheduled job above", True),
+    "run_daily_check.sh": ("Daily pulse-check",
+        "Checks conversion tracking, budget pacing and cost changes. Feeds the Daily Check tab.",
+        "Automatic, when scheduled", False),
+}
+
+BINARY_REPORT_EXTS = {"pdf"}  # not text — never decode as UTF-8, never embed content
+
+
+def scan_reports(reports_dir: Path, slug: str = "") -> list:
     out = []
     if not reports_dir.exists():
         return out
@@ -325,7 +380,14 @@ def scan_reports(reports_dir: Path) -> list:
             rtype = "other"
             date_str = datetime.fromtimestamp(f.stat().st_mtime).strftime("%Y-%m-%d")
             ts = datetime.fromtimestamp(f.stat().st_mtime).isoformat()
-        content = f.read_text(encoding="utf-8", errors="replace")
+        ext = f.suffix.lstrip(".").lower()
+        is_html = ext == "html"
+        if is_html and not KEEP_HTML_RE.match(f.name):
+            continue  # old drafts / previews / backups - not worth listing
+        is_binary = ext in BINARY_REPORT_EXTS
+        # HTML pages are never read: they are linked to their live copy instead
+        content = "" if (is_binary or is_html) else f.read_text(encoding="utf-8", errors="replace")
+        url = (CLIENT_META.get(slug) or {}).get("report_url") if is_html else None
         out.append({
             "filename": f.name,
             "type": rtype,
@@ -336,20 +398,138 @@ def scan_reports(reports_dir: Path) -> list:
             "stats": parse_report_stats(rtype, content),
             "status": parse_run_status(content),
             "content": content,
+            "is_binary": is_binary,
+            "is_html": is_html,
+            "url": url,
         })
     out.sort(key=lambda r: r["timestamp"], reverse=True)
     return out
 
 
+def copy_logo(slug: str, client_dir: Path):
+    """clients/<slug>/logo.png (from scripts/fetch_client_logos.py, or saved by hand) -> dashboard/logos/<slug>.png.
+    Returns the relative URL with a cache-buster, or None (initials avatar is used)."""
+    src = client_dir / "logo.png"
+    if not src.exists():
+        return None
+    dst = OUT_DIR / "logos" / f"{slug}.png"
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    data = src.read_bytes()
+    if not dst.exists() or dst.read_bytes() != data:
+        dst.write_bytes(data)
+    return f"logos/{slug}.png?v={int(src.stat().st_mtime)}"
+
+
+NEG_KEEP_DAYS = 90  # negatives shown in the Negatives tab (lazy data file)
+
+
+def short_reason(text: str, limit: int = 90) -> str:
+    """First sentence of the audit's reason, capped - the Reports view shows short reasons only."""
+    t = re.split(r"(?<=[.;])\s", text.strip(), maxsplit=1)[0].rstrip(".;")
+    return t if len(t) <= limit else t[:limit - 1].rstrip() + "…"
+
+
+def last_attempt(content: str) -> str:
+    """A log can hold several retries ('Attempt: ...'); only the last one with results counts."""
+    chunks = re.split(r"\n\s*Attempt:\s.*\n", content)
+    for chunk in reversed(chunks):
+        if re.search(r"\[(NEGATED|NEGATE|KEPT|BROAD)\]", chunk):
+            return chunk
+    return content
+
+
+def parse_audit(r: dict, content: str):
+    """Structured result of one keyword / PMax audit log:
+    {"n": [[term, reason, campaign]], "b": [[term, reason]], "k": [[[terms...], reason]], "rev": N, "live": bool}
+    keywords_audit: '[NEGATED] t | why' (exact), '[BROAD] t | why', '[KEPT] a / b | why'.
+    pmax_audit    : '[NEGATE] t | why' under 'Campaign : X'; changes only count when 'changes applied'."""
+    if r["type"] not in ("keywords_audit", "pmax_audit", "pmax_brand_generic_audit"):
+        return None
+    body = last_attempt(content)
+    out = {"d": r["date"], "n": [], "b": [], "k": [], "rev": None, "live": True}
+    m = re.search(r"Terms reviewed:\s*(\d+)", body) or re.search(r"Terms total\s*:\s*(\d+)", body)
+    if r["type"] == "keywords_audit":
+        out["rev"] = int(m.group(1)) if m else None
+        for kind, term, why in re.findall(r"\[(NEGATED|BROAD|KEPT)\]\s*(.+?)\s*\|\s*(.+)", body):
+            if kind == "NEGATED":
+                out["n"].append([term.strip(), short_reason(why), ""])
+            elif kind == "BROAD":
+                out["b"].append([term.strip(), short_reason(why)])
+            else:
+                out["k"].append([[t.strip() for t in term.split(" / ") if t.strip()], short_reason(why)])
+        out["live"] = r["status"] in ("success", None)
+    else:
+        out["live"] = "changes applied" in body
+        out["rev"] = sum(int(x) for x in re.findall(r"Terms total\s*:\s*(\d+)", body)) or None
+        campaign = ""
+        for line in body.splitlines():
+            cm = re.match(r"Campaign\s*:\s*(.+)", line)
+            if cm:
+                campaign = cm.group(1).strip()
+                continue
+            nm = re.search(r"\[NEGATE\]\s*(.+?)\s*\|\s*(.+)", line)
+            if nm:
+                out["n"].append([nm.group(1).strip(), short_reason(nm.group(2)), campaign])
+    return out if (out["n"] or out["b"] or out["k"]) else None
+
+
+def parse_negatives(r: dict, content: str) -> list:
+    """Negatives an audit actually added (exact + broad), for the Negatives tab."""
+    a = parse_audit(r, content)
+    if not a or not a["live"]:
+        return []
+    return ([{"d": r["date"], "t": t, "r": why, "m": "exact", "c": c} for t, why, c in a["n"]]
+            + [{"d": r["date"], "t": t, "r": why, "m": "broad", "c": ""} for t, why in a["b"]])
+
+
+def split_heavy(c: dict) -> dict:
+    """Move the heavy per-client fields out of the client dict (so index.html stays small)
+    and return them for dashboard/data/<slug>.js. Log text is embedded only for recent,
+    reasonably small text files; everything else keeps its stats but no body."""
+    heavy = {"brief_markdown": c.pop("brief_markdown"), "changes": c.pop("changes"), "logs": {}, "audits": {}}
+    negatives = []
+    today = datetime.now().date()
+    for r in c["reports"]:
+        content = r.pop("content")
+        age = (today - datetime.fromisoformat(r["date"]).date()).days
+        if age <= NEG_KEEP_DAYS and content:
+            # one store for both tabs: Reports shows an audit, Negatives flattens the live ones
+            negatives.extend(parse_negatives(r, content))
+            audit = parse_audit(r, content)
+            if audit:
+                heavy["audits"][r["filename"]] = audit
+        embed = bool(content) and age <= LOG_EMBED_DAYS and r["size_bytes"] <= LOG_EMBED_MAX_BYTES
+        r["has_content"] = embed
+        if embed:
+            heavy["logs"][r["filename"]] = content
+    c["changes_count"] = len(heavy["changes"])
+    c["negatives_30d"] = sum(1 for n in negatives
+                             if (today - datetime.fromisoformat(n["d"]).date()).days < 30)
+    c["negatives_90d"] = len(negatives)
+    return heavy
+
+
+def write_client_data(slug: str, heavy: dict) -> None:
+    """Write dashboard/data/<slug>.js - a plain script (works from file:// and https)."""
+    data_dir = OUT_DIR / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(heavy, ensure_ascii=False).replace("</script", "<\\/script")
+    (data_dir / f"{slug}.js").write_text(
+        f"window.CLIENT_DATA=window.CLIENT_DATA||{{}};window.CLIENT_DATA[{json.dumps(slug)}]={payload};",
+        encoding="utf-8",
+    )
+
+
 def build():
     clients = []
+    heavy_by_slug = {}
     for client_dir in sorted(CLIENTS_DIR.iterdir()):
         if not client_dir.is_dir() or client_dir.name.startswith("_"):
             continue  # skip clients/_template/ and any other underscore-prefixed scaffolding folder
         slug = client_dir.name
         brief_file = client_dir / "client-brief.md"
         brief_md = brief_file.read_text(encoding="utf-8", errors="replace") if brief_file.exists() else ""
-        reports = scan_reports(client_dir / "reports")
+        reports = scan_reports(client_dir / "reports", slug)
         scripts = scan_scripts(client_dir / "scripts")
         meta = CLIENT_META.get(slug, {"name": slug.title(), "domain": None, "customer_id": None})
 
@@ -372,7 +552,11 @@ def build():
             "domain": meta.get("domain"),
             "customer_id": meta.get("customer_id"),
             "business_type": meta.get("business_type", "lead_gen"),
-            "links": meta.get("links", {}),
+            "archived": bool(meta.get("archived", False)),
+            "logo": copy_logo(slug, client_dir),
+            # quick links + the live monthly report page, when the client has one
+            "links": ({"Monthly report": meta["report_url"]} if meta.get("report_url") else {})
+                     | meta.get("links", {}),
             "brief_markdown": brief_md,
             "reports": reports,
             "scripts": scripts,
@@ -383,9 +567,16 @@ def build():
             "pulse": pulse,
         })
 
+    for c in clients:
+        heavy_by_slug[c["slug"]] = split_heavy(c)
+    for old in (OUT_DIR / "data").glob("*.js") if (OUT_DIR / "data").exists() else []:
+        old.unlink()  # drop data files of clients that no longer exist
+    for slug, heavy in heavy_by_slug.items():
+        write_client_data(slug, heavy)
+
     total_reports = sum(c["report_count"] for c in clients)
     total_negated_7d = sum(c["recent_negated"] for c in clients)
-    total_changes = sum(len(c["changes"]) for c in clients)
+    total_changes = sum(c["changes_count"] for c in clients)
     latest = max(
         (c for c in clients if c["latest_report_date"]),
         key=lambda c: c["latest_report_date"],
@@ -396,7 +587,8 @@ def build():
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "clients": clients,
         "summary": {
-            "total_clients": len(clients),
+            "total_clients": sum(1 for c in clients if not c["archived"]),
+            "archived_clients": sum(1 for c in clients if c["archived"]),
             "total_reports": total_reports,
             "negated_7d": total_negated_7d,
             "total_changes": total_changes,
