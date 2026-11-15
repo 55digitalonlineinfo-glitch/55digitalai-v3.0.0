@@ -36,6 +36,7 @@ Every slash command in `.claude/commands/` invokes `.venv/bin/python3` directly 
 - `scripts/generate_audit_pdf.py` — renders the structured "full account audit" JSON (see the file's docstring for the schema) into a branded PDF.
 - `scripts/text_report_pdf.py` — generic renderer for everything else: pass it the plain-text output of any report script and it produces a branded PDF, no bespoke schema needed. `daily_check.py`, `campaign_analyst.py run`, `merchant_review.py`, and `seasonality.py` all support a `--pdf` flag built on this.
 - `.claude/commands/` — the slash commands that orchestrate the scripts above with human-in-the-loop approval before any write.
+- `team-map/index.html` — visual org chart of every slash command and agent prompt, grouped into departments (Google Ads, SEO, Web & CRO, Setup & Automation). Open it in a browser and click any card for what it does, how it works, what you give it and what you get back. Local only, no account data; update its `DEPARTMENTS` list when a command is added.
 - `system-prompts/` — the PPC reasoning frameworks and specialist agent prompts the AI judgment steps use.
 - `clients/_template/` — copy this per client (or let `setup_wizard.py` do it).
 
