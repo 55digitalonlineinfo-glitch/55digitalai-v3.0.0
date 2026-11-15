@@ -53,6 +53,11 @@ Notes
       screenshot of each FAIL before sending the report to a client.
 
 Changelog
+    2026-11-14  v3.2 - point 2 measures only an element's own text nodes, so a decorative oversized child (e.g. a spinning
+                     aria-hidden ring clipped inside a CTA button) no longer reports a false negative side margin. trect() (point 40
+                     cramped padding and others) unions only visible text nodes for the same reason. Point 60 skips SVGs built from
+                     <text> (wordmark logos). Point 40 checks side padding only on boxes with side edges or a background (a hairline
+                     divider has none).
     2026-11-13  v3.1 - comparable before/after: every screenshot stores its crop relative to the page section it sits in
                      (audit.json "crop": section id / tag+class+order, offset, size; viewport frame for the bottom bar). With
                      --before the after shot cuts exactly the same part of the same section, same pixel size, even when the
@@ -121,7 +126,14 @@ const mk = (c, r, v, f) => ({ c, r: [...r], sel: r.sel, v: String(v === undefine
 const lab = e => e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim() ? '.' + e.className.trim().split(/\s+/)[0] : '');
 const num = v => Math.round(v * 10) / 10;
 const lh = s => { const fs = px(s.fontSize); return s.lineHeight === 'normal' ? fs * 1.2 : px(s.lineHeight); };
-const trect = e => { const rg = document.createRange(); rg.selectNodeContents(e); return rg.getBoundingClientRect(); };
+// text box of an element = union of its visible text nodes only (decorative aria-hidden children such as an oversized
+// spinning ring inside a CTA would otherwise stretch the box past the element and fake 'cramped' / edge findings)
+const trect = e => { const tw = document.createTreeWalker(e, NodeFilter.SHOW_TEXT); let L = 1e9, T = 1e9, R = -1e9, B = -1e9;
+  while (tw.nextNode()) { const n = tw.currentNode; if (!n.textContent.trim() || (n.parentElement && n.parentElement.closest('[aria-hidden="true"]') && !e.closest('[aria-hidden="true"]'))) continue;
+    const rg = document.createRange(); rg.selectNodeContents(n); for (const q of rg.getClientRects()) { if (q.width < 1) continue;
+      L = Math.min(L, q.left); T = Math.min(T, q.top); R = Math.max(R, q.right); B = Math.max(B, q.bottom); } }
+  if (R < L) { const rg = document.createRange(); rg.selectNodeContents(e); return rg.getBoundingClientRect(); }
+  return { left: L, top: T, right: R, bottom: B, width: R - L, height: B - T, x: L, y: T }; };
 const inScroller = e => { let n = e.parentElement; while (n && n !== document.body) { const s = getComputedStyle(n);
   if (/(auto|scroll)/.test(s.overflowX) && n.scrollWidth > n.clientWidth + 4) return true; n = n.parentElement; } return false; };
 const pct = (a, p) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))]; };
@@ -145,7 +157,10 @@ run(1, () => {
 run(2, () => {
   const L = [], R = [], modes = {};
   els.forEach(e => { const t = text(e); if (t.length < 2 || cs.get(e).position === 'fixed' || inScroller(e)) return;
-    const rg = document.createRange(); rg.selectNodeContents(e); const r = rg.getClientRects()[0]; if (!r || r.width < 4) return;
+    // measure only the element's own text nodes: selecting the whole element would include decorative
+    // children (e.g. an oversized aria-hidden ring clipped by the button) and report a false negative margin
+    const tn = [...e.childNodes].find(n => n.nodeType === 3 && n.textContent.trim().length > 1); if (!tn) return;
+    const rg = document.createRange(); rg.selectNodeContents(tn); const r = [...rg.getClientRects()].find(q => q.width >= 4); if (!r) return;
     const l = Math.round(r.left * 2) / 2; L.push({ l, e }); modes[l] = (modes[l] || 0) + 1;
     const br = e.getBoundingClientRect(); if (/^(P|H1|H2|H3|LI)$/.test(e.tagName) && br.width > innerWidth * .5) R.push(innerWidth - br.right); });
   if (!L.length) return { err: 'no text' };
@@ -504,9 +519,14 @@ run(41, () => {
 // 42 cramped padding: text too close to the edge of its own visible box
 run(42, () => {
   const bad = els.filter(e => { if (!text(e) || e.matches('input,select,textarea') || /^inline$/.test(cs.get(e).display)) return false; const s = cs.get(e);
-    if (!(col(s.backgroundColor)[3] > .1 || px(s.borderTopWidth) > 0 || px(s.borderLeftWidth) > 0)) return false;
+    const bg = col(s.backgroundColor)[3] > .1, sides = bg || px(s.borderLeftWidth) > 0 || px(s.borderRightWidth) > 0;
+    if (!(sides || px(s.borderTopWidth) > 0 || px(s.borderBottomWidth) > 0)) return false;
     const r = e.getBoundingClientRect(); if (r.height > 200 || r.width < 24) return false; const t = trect(e); if (!t.width) return false;
-    const hz = Math.min(t.left - r.left, r.right - t.right), vt = Math.min(t.top - r.top, r.bottom - t.bottom); return hz < 8 || vt < 3; });
+    // a top/bottom hairline divider has no side edges: only the gap to the line itself can be cramped
+    const hz = sides ? Math.min(t.left - r.left, r.right - t.right) : 99;
+    const vt = sides ? Math.min(t.top - r.top, r.bottom - t.bottom)
+      : Math.min(px(s.borderTopWidth) > 0 ? t.top - r.top : 99, px(s.borderBottomWidth) > 0 ? r.bottom - t.bottom : 99);
+    return hz < 8 || vt < 3; });
   return { n: bad.length, marks: bad.slice(0, 3).map(e => mk('r', rect(e), '')) }; });
 
 // 43 content still invisible after every reveal had its chance (failed scroll-reveal)
@@ -678,7 +698,7 @@ run(61, () => {
 
 // 62 consistent icon style: one stroke width and line-vs-filled style for inline SVG icons
 run(62, () => {
-  const svgs = $$('svg').filter(shown).filter(s => { const r = s.getBoundingClientRect(); return r.width >= 12 && r.width <= 48; });
+  const svgs = $$('svg').filter(shown).filter(s => { const r = s.getBoundingClientRect(); return r.width >= 12 && r.width <= 48 && !s.querySelector('text'); });  // an SVG built from <text> is a wordmark/logo, not an icon
   const style = s => { const st = s.getAttribute('stroke') || getComputedStyle(s).stroke, f = s.getAttribute('fill') || '';
     return (st && st !== 'none' && f === 'none') ? 'line' + (s.getAttribute('stroke-width') || getComputedStyle(s).strokeWidth || '') : 'fill'; };
   const kinds = {}; svgs.forEach(s => { const k = style(s); (kinds[k] = kinds[k] || []).push(s); });
