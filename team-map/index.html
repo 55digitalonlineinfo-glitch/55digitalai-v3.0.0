@@ -430,10 +430,10 @@ const DEPARTMENTS = [
 },
 {
   id:'setup', name:'Setup & Automation', icon:'setup',
-  lead:{ name:'Setup Lead', role:'Onboards clients and installs schedules',
-    what:'Adds new clients to the toolkit and turns the manual audits into unattended scheduled routines when you decide to.',
-    logic:['Credentials (google-ads.yaml) come first, from bash setup.sh in a real terminal.','A filled-in client brief is required before any automation.','Every schedule is tested once and confirmed by you before it is installed.'],
-    output:['New client in clients.json','Installed launchd / Task Scheduler jobs'], tools:['Google Ads API','launchd','Task Scheduler'] },
+  lead:{ name:'Setup Lead', role:'Onboards new clients',
+    what:'Adds new clients to the toolkit and drafts the client brief every audit reasons against. Scheduled audits live in the Google Ads department.',
+    logic:['Credentials (google-ads.yaml) come first, from bash setup.sh in a real terminal.','Add the client and review the drafted brief before running any audit or schedule.'],
+    output:['New client in clients.json','Draft client brief'], tools:['Google Ads API','Claude'] },
   groups:[
   { name:'Onboarding', what:'Adds a client and drafts the brief every audit reasons against.', agents:[
     { id:'newclient', name:'Client Onboarder', kind:'command', cmd:'/55-setup-new-client', writes:'local',
@@ -442,7 +442,9 @@ const DEPARTMENTS = [
       logic:['List the accounts under your MCC.','Ask name, slug, domain, country, timezone, business type, currency and budget.','Write the client entry and the clients/<slug>/ folder.','Offer a draft brief from the website (clearly marked unreviewed).'],
       input:'Answers to the questions.', output:['clients.json entry','clients/<slug>/client-brief.md draft'],
       files:['.claude/commands/55-setup-new-client.md','scripts/add_client.py','scripts/setup_wizard.py','scripts/generate_brief.py'], tools:['Google Ads API','Claude'] }
-  ]},
+  ]}]
+}];
+const GADS_SCHEDULES =
   { name:'Schedules', what:'Turns a manual audit into a standing routine. Scheduled runs write without review, so setup is deliberate.', agents:[
     { id:'schedkw', name:'Keyword Audit Scheduler', kind:'automation', cmd:'/55-setup-keyword-audit-automation <slug>', writes:'approval', schedule:'Days you pick (default Tue + Fri)',
       role:'Unattended negative keyword audit',
@@ -462,8 +464,8 @@ const DEPARTMENTS = [
       logic:['Check prerequisites, including the branded exclusion list.','Ask the schedule.','Scaffold, review, test once.','Install after your confirmation.'],
       input:'Client slug.', output:['Installed scheduled job'],
       files:['.claude/commands/55-setup-pmax-brand-generic-audit-automation.md','scripts/scaffold_pmax_brand_generic_audit.py'], tools:['launchd','Task Scheduler','Claude'] }
-  ]}]
-}];
+  ]};
+DEPARTMENTS[0].groups.push(GADS_SCHEDULES); // Google Ads department
 
 /* ---------- Render ---------- */
 const world = document.getElementById('world');
