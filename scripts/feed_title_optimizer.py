@@ -118,6 +118,20 @@ Changelog: 2026-07-25  Initial version (title mode only, check-only) — tested 
                        `print_product_selection()`'s "product id" column
                        already prints the new format, so build plan.json
                        from that column as before.
+           2026-11-16  `--days` now defaults to the account's full available
+                       history (earliest real activity -> today) instead of
+                       a fixed 90 days, via `find_earliest_activity_date()` /
+                       `resolve_history_days()` — a fixed 90-day window was
+                       hiding most of the real conversion signal on accounts
+                       with longer history. Pass `--days N` explicitly for
+                       a deliberately shorter/seasonal look. Also raised
+                       title mode's `--top` default from 20 to 80 — a lower
+                       cutoff was burying a real, lower-ranked converting
+                       term under many near-duplicate phrasings of a
+                       higher-ranked one (plural/singular, word order,
+                       language-variant spelling); read every row regardless
+                       of where the cutoff lands, don't assume a higher
+                       `--top` means "use all of them."
 """
 
 import argparse
@@ -173,6 +187,42 @@ NAVIGATIONAL_MARKERS = {"address", "phone", "opening hours", "near me", "adres",
 
 def get_ads_client():
     return GoogleAdsClient.load_from_storage(str(GOOGLE_ADS_YAML))
+
+
+def find_earliest_activity_date(ads_client, customer_id, lookback_days=3650):
+    """Earliest date this account has any real impressions, within a bounded
+    ~10y lookback (keeps this one GAQL call cheap instead of scanning
+    unbounded history). Backs resolve_history_days()'s "max available
+    history" default — a fixed 90-day default can hide most of the real
+    conversion signal on an older account; the full-history window this
+    resolves to has surfaced several times the converting generic
+    search-term volume a 90-day window saw on real accounts checked this
+    way."""
+    ga_service = ads_client.get_service("GoogleAdsService")
+    today = datetime.utcnow().date()
+    date_from = str(today - timedelta(days=lookback_days))
+    query = f"""
+        SELECT segments.date
+        FROM campaign
+        WHERE segments.date BETWEEN '{date_from}' AND '{today}'
+          AND metrics.impressions > 0
+        ORDER BY segments.date ASC
+        LIMIT 1
+    """
+    for row in ga_service.search(customer_id=customer_id, query=query):
+        return datetime.strptime(row.segments.date, "%Y-%m-%d").date()
+    return today  # no activity at all in the lookback window — 0-day window, not a crash
+
+
+def resolve_history_days(ads_client, customer_id, days_arg):
+    """--days N is still a quick, cheap override — but when NOT given,
+    default to the account's full available history (earliest real
+    activity date -> today) instead of a fixed 90-day window."""
+    if days_arg is not None:
+        return days_arg
+    earliest = find_earliest_activity_date(ads_client, customer_id)
+    today = datetime.utcnow().date()
+    return max((today - earliest).days, 1)
 
 
 def tokenize(text):
@@ -620,16 +670,18 @@ def cmd_title(args):
     creds = get_credentials()
     headers = {"Authorization": f"Bearer {creds.token}"}
 
+    days = resolve_history_days(ads_client, client_meta["customer_id"], args.days)
     today = datetime.utcnow().date()
-    date_from = str(today - timedelta(days=args.days))
+    date_from = str(today - timedelta(days=days))
     date_to = str(today)
 
     print(f"Client   : {client_meta['name']} ({args.client})")
-    print(f"Period   : {date_from} -> {date_to} ({args.days} days)")
+    print(f"Period   : {date_from} -> {date_to} ({days} days"
+          + ("" if args.days is not None else ", full account history") + ")")
     print(f"Merchant : {merchant_id}")
     print(f"Selection: {args.select}" + (f" (ids: {args.ids})" if args.select == "ids" else "") + "\n")
 
-    selected = resolve_product_selection(args.select, args.ids, client_meta, merchant_id, headers, args.days, rank_by=args.rank_by)
+    selected = resolve_product_selection(args.select, args.ids, client_meta, merchant_id, headers, days, rank_by=args.rank_by)
     print_product_selection(selected)
     print("\n(Coverage checking below still scans the FULL catalog's titles, regardless of selection above —")
     print("a term already covered by some other product's title genuinely isn't a gap, even if that other")
@@ -835,22 +887,25 @@ def cmd_describe_fetch_candidates(args):
     creds = get_credentials()
     headers = {"Authorization": f"Bearer {creds.token}"}
 
+    ads_client = get_ads_client()
+    days = resolve_history_days(ads_client, client_meta["customer_id"], args.days)
+
     print(f"Client   : {client_meta['name']} ({args.client})")
     print(f"Merchant : {merchant_id}")
     print(f"Selection: {args.select}" + (f" (ids: {args.ids})" if args.select == "ids" else "") + "\n")
 
-    selected = resolve_product_selection(args.select, args.ids, client_meta, merchant_id, headers, args.days, rank_by=args.rank_by)
+    selected = resolve_product_selection(args.select, args.ids, client_meta, merchant_id, headers, days, rank_by=args.rank_by)
     print_product_selection(selected)
 
     country = client_meta.get("country")
     geo = GEO_TARGET_CONSTANTS.get(country)
     language = LANGUAGE_CONSTANTS.get(country)
     if geo and language:
-        ads_client = get_ads_client()
         today = datetime.utcnow().date()
-        date_from = str(today - timedelta(days=args.days))
+        date_from = str(today - timedelta(days=days))
         date_to = str(today)
-        print(f"\nPulling search terms ranked by conversions (last {args.days} days)...")
+        print(f"\nPulling search terms ranked by conversions (last {days} days"
+              + ("" if args.days is not None else ", full account history") + ")...")
         ranked = fetch_search_terms_ranked(ads_client, client_meta["customer_id"], date_from, date_to,
                                             min_impressions=args.min_impressions)
         print(f"{len(ranked)} term(s) with >= {args.min_impressions} impressions:\n")
@@ -1040,9 +1095,10 @@ def main():
     p_title_fetch.add_argument("--ids", help="Comma-separated Merchant Center product IDs (required if --select ids)")
     p_title_fetch.add_argument("--rank-by", choices=["revenue", "impressions", "clicks", "conversions", "conversions_value"],
                                 default="revenue", help="What 'best' means for --select best5/15/30 (default: revenue via GA4)")
-    p_title_fetch.add_argument("--days", type=int, default=90)
+    p_title_fetch.add_argument("--days", type=int, default=None,
+                                help="Lookback window. Default: full account history (earliest real activity -> today), not a fixed 90 days.")
     p_title_fetch.add_argument("--min-impressions", type=int, default=10)
-    p_title_fetch.add_argument("--top", type=int, default=20)
+    p_title_fetch.add_argument("--top", type=int, default=80)
     p_title_fetch.set_defaults(func=cmd_title)
 
     p_title_apply = title_sub.add_parser("apply", help="Write approved titles to Merchant Center")
@@ -1060,7 +1116,8 @@ def main():
     p_fetch.add_argument("--ids", help="Comma-separated Merchant Center product IDs (required if --select ids)")
     p_fetch.add_argument("--rank-by", choices=["revenue", "impressions", "clicks", "conversions", "conversions_value"],
                           default="revenue", help="What 'best' means for --select best5/15/30 (default: revenue via GA4)")
-    p_fetch.add_argument("--days", type=int, default=90)
+    p_fetch.add_argument("--days", type=int, default=None,
+                          help="Lookback window. Default: full account history (earliest real activity -> today), not a fixed 90 days.")
     p_fetch.add_argument("--min-impressions", type=int, default=5)
     p_fetch.add_argument("--top", type=int, default=30)
     p_fetch.set_defaults(func=cmd_describe_fetch_candidates)
